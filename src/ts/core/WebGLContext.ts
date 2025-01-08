@@ -1,30 +1,26 @@
-// src/ts/core/WebGLContext.ts
 import * as THREE from 'three';
 
 export class WebGLContext {
     private renderer: THREE.WebGLRenderer;
     private scene: THREE.Scene;
     private camera: THREE.Camera;
+    private mousePosition: THREE.Vector2;
 
     constructor(container: HTMLElement) {
-        // Initialize renderer with proper alpha settings
         this.renderer = new THREE.WebGLRenderer({ 
             antialias: true,
             alpha: true,
             premultipliedAlpha: false,
             stencil: false,
-            depth: false,
-            preserveDrawingBuffer: false
+            depth: false
         });
 
-        // Set clear color to transparent
         this.renderer.setClearColor(0x000000, 0);
         this.renderer.autoClear = true;
         
         this.scene = new THREE.Scene();
-        this.scene.background = null; // Ensure scene background is transparent
+        this.scene.background = null;
         
-        // Use orthographic camera for 2D effects
         const aspectRatio = window.innerWidth / window.innerHeight;
         this.camera = new THREE.OrthographicCamera(
             -aspectRatio, aspectRatio,
@@ -34,24 +30,26 @@ export class WebGLContext {
         
         this.camera.position.z = 1;
         
+        // Initialize mouse position
+        this.mousePosition = new THREE.Vector2(0, 0);
+        
         this.initializeRenderer(container);
-        this.handleResize();
+        this.handleEvents();
     }
 
     private initializeRenderer(container: HTMLElement): void {
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         this.renderer.setPixelRatio(window.devicePixelRatio);
         
-        // Ensure container is transparent
         container.style.backgroundColor = 'transparent';
         container.appendChild(this.renderer.domElement);
 
-        // Set canvas to be transparent
         const canvas = this.renderer.domElement;
         canvas.style.background = 'transparent';
     }
 
-    private handleResize(): void {
+    private handleEvents(): void {
+        // Handle window resize
         window.addEventListener('resize', () => {
             const aspectRatio = window.innerWidth / window.innerHeight;
             const camera = this.camera as THREE.OrthographicCamera;
@@ -60,6 +58,20 @@ export class WebGLContext {
             camera.updateProjectionMatrix();
             this.renderer.setSize(window.innerWidth, window.innerHeight);
         });
+
+        // Handle mouse events
+        this.renderer.domElement.addEventListener('mousemove', (event) => {
+            this.mousePosition.x = event.clientX;
+            this.mousePosition.y = window.innerHeight - event.clientY; // Flip Y coordinate for shader
+        });
+
+        // Initialize at center if no mouse movement
+        this.mousePosition.x = window.innerWidth / 2;
+        this.mousePosition.y = window.innerHeight / 2;
+    }
+
+    public getMousePosition(): THREE.Vector2 {
+        return this.mousePosition;
     }
 
     public getRenderer(): THREE.WebGLRenderer {
