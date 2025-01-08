@@ -4,22 +4,24 @@
 
 @layer base {
   body {
-    @apply bg-neon-dark text-white;
+    @apply bg-space-dark text-white;
   }
 }
 
 @layer components {
   .neon-button {
-    @apply px-8 py-3 border-2 border-neon-primary text-neon-primary 
-           transition-all duration-300 backdrop-blur-sm
-           hover:bg-neon-primary/10 hover:shadow-[0_0_20px_rgba(0,255,249,0.5)];
+    @apply px-8 py-3 bg-transparent border-2 border-space-purple text-space-purple 
+           transition-all duration-300 
+           hover:bg-space-purple/10
+           hover:shadow-[0_0_20px_rgba(156,107,255,0.5)]
+           text-lg uppercase tracking-wider;
   }
 
   .neon-text {
-    @apply text-neon-primary;
+    @apply text-space-blue;
   }
 
   .neon-text-glow {
-    @apply text-neon-primary animate-neon-glow;
+    @apply text-space-blue animate-neon-glow;
   }
 }

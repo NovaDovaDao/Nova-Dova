@@ -6,36 +6,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>NOVA DOVA DAO</title>
   </head>
-  <body class="min-h-screen bg-gradient-to-b from-neon-dark to-black">
-    <nav class="fixed top-0 left-0 w-full z-50 bg-neon-dark/80 backdrop-blur-md border-b border-neon-primary/20">
-      <div class="container mx-auto px-6 py-4">
-        <div class="flex items-center justify-between">
-          <a href="/" class="text-2xl font-bold text-neon-primary animate-neon-pulse">NOVA DOVA DAO</a>
-          <div class="hidden md:flex space-x-8">
-            <a href="#about" class="text-white hover:text-neon-primary transition-colors">About</a>
-            <a href="#interface" class="text-white hover:text-neon-primary transition-colors">Interface</a>
-            <a href="#connect" class="text-white hover:text-neon-primary transition-colors">Connect</a>
-          </div>
-        </div>
-      </div>
-    </nav>
+  <body class="bg-space-dark text-white">
+    <div class="fixed inset-0" id="heroCanvas"></div>
     
     <main>
-      <section class="hero min-h-screen relative flex items-center justify-center overflow-hidden">
-        <div class="hero__canvas absolute inset-0" id="heroCanvas"></div>
-        <div class="hero__content relative z-10 text-center px-6">
-          <h1 class="text-6xl md:text-8xl font-bold mb-6 neon-text-glow">NOVA DOVA DAO</h1>
-          <p class="text-xl md:text-2xl mb-8 text-white/90">Explore the future of AI agents</p>
-          <button class="neon-button">Explore Platform</button>
-        </div>
-      </section>
-
-      <section class="ai-interface py-20" id="aiInterface">
-        <div class="container mx-auto px-6">
-          <h2 class="text-4xl font-bold mb-8 neon-text">AI Agent Interface</h2>
-          <div class="bg-neon-dark/50 backdrop-blur-lg border border-neon-primary/20 rounded-lg p-8">
-            <!-- AI interface content -->
-          </div>
+      <section class="relative min-h-screen flex items-center justify-center">
+        <div class="text-center px-6 z-10">
+          <h1 class="text-7xl md:text-9xl font-bold mb-8 text-space-blue animate-neon-glow tracking-wider">
+            NOVA DOVA DAO
+          </h1>
+          <p class="text-2xl md:text-3xl mb-12 text-white/80">
+            Explore the future of AI agents
+          </p>
+          <button class="neon-button">
+            Explore Platform
+          </button>
         </div>
       </section>
     </main>
