@@ -26,13 +26,16 @@ export default {
         },
         'neon-glow': {
           '0%, 100%': { 
-            'text-shadow': '0 0 7px rgba(75,107,255,0.8), 0 0 10px rgba(156,107,255,0.8)'
+            'text-shadow': '0 0 7px rgba(75,107,255,0.3), 0 0 10px rgba(156,107,255,0.3)'
           },
           '50%': { 
-            'text-shadow': '0 0 14px rgba(75,107,255,0.8), 0 0 20px rgba(156,107,255,0.8)'
+            'text-shadow': '0 0 14px rgba(75,107,255,0.5), 0 0 20px rgba(156,107,255,0.5)'
           },
         },
       },
+      backgroundImage: {
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+      }
     },
   },
   plugins: [],

@@ -3,25 +3,34 @@
 @tailwind utilities;
 
 @layer base {
-  body {
-    @apply bg-space-dark text-white;
+  html, body {
+    @apply bg-black overflow-x-hidden;
+  }
+  
+  #heroCanvas {
+    @apply bg-transparent;
+  }
+  
+  canvas {
+    @apply mix-blend-normal;
   }
 }
 
 @layer components {
   .neon-button {
-    @apply px-8 py-3 bg-transparent border-2 border-space-purple text-space-purple 
+    @apply px-8 py-3 
+           border-2 border-space-purple 
+           text-space-purple
            transition-all duration-300 
            hover:bg-space-purple/10
            hover:shadow-[0_0_20px_rgba(156,107,255,0.5)]
-           text-lg uppercase tracking-wider;
-  }
-
-  .neon-text {
-    @apply text-space-blue;
-  }
-
-  .neon-text-glow {
-    @apply text-space-blue animate-neon-glow;
+           text-lg uppercase tracking-wider
+           relative
+           after:content-['']
+           after:absolute
+           after:inset-0
+           after:border-2
+           after:border-space-purple/50
+           after:blur-[2px];
   }
 }
