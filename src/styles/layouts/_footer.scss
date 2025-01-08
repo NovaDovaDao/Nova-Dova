@@ -1,0 +1,28 @@
+.footer {
+    padding: 2rem;
+    background: rgba(-background, 0.9);
+    border-top: 1px solid rgba(-neon-primary, 0.2);
+    
+    &__content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+    }
+    
+    &__social {
+        display: flex;
+        gap: 1rem;
+        
+        a {
+            color: -neon-secondary;
+            transition: all 0.3s ease;
+            
+            &:hover {
+                color: -neon-primary;
+                text-shadow: 0 0 10px currentColor;
+            }
+        }
+    }
+}

@@ -1,0 +1,18 @@
+.button-neon {
+    background: transparent;
+    border: 2px solid $color-neon-primary;
+    color: $color-neon-primary;
+    padding: 1rem 2rem;
+    font-family: $font-primary;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-shadow: 0 0 5px rgba($color-neon-primary, 0.8);
+    box-shadow: 0 0 10px rgba($color-neon-primary, 0.3);
+
+    &:hover {
+        background: rgba($color-neon-primary, 0.1);
+        box-shadow: 0 0 20px rgba($color-neon-primary, 0.5);
+    }
+}

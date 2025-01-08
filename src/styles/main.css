@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-neon-dark text-white;
+  }
+}
+
+@layer components {
+  .neon-button {
+    @apply px-8 py-3 border-2 border-neon-primary text-neon-primary 
+           transition-all duration-300 backdrop-blur-sm
+           hover:bg-neon-primary/10 hover:shadow-[0_0_20px_rgba(0,255,249,0.5)];
+  }
+
+  .neon-text {
+    @apply text-neon-primary;
+  }
+
+  .neon-text-glow {
+    @apply text-neon-primary animate-neon-glow;
+  }
+}
