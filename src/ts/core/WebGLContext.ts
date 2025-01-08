@@ -4,7 +4,7 @@ import * as THREE from 'three';
 export class WebGLContext {
     private renderer: THREE.WebGLRenderer;
     private scene: THREE.Scene;
-    private camera: THREE.PerspectiveCamera;
+    private camera: THREE.Camera;
 
     constructor(container: HTMLElement) {
         this.renderer = new THREE.WebGLRenderer({ 
@@ -13,7 +13,14 @@ export class WebGLContext {
             preserveDrawingBuffer: true
         });
         this.scene = new THREE.Scene();
-        this.camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 10);
+        
+        // Use orthographic camera for 2D effects
+        const aspectRatio = window.innerWidth / window.innerHeight;
+        this.camera = new THREE.OrthographicCamera(
+            -aspectRatio, aspectRatio,
+            1, -1,
+            0.1, 100
+        );
         
         // Position camera
         this.camera.position.z = 1;
@@ -30,6 +37,11 @@ export class WebGLContext {
 
     private handleResize(): void {
         window.addEventListener('resize', () => {
+            const aspectRatio = window.innerWidth / window.innerHeight;
+            const camera = this.camera as THREE.OrthographicCamera;
+            camera.left = -aspectRatio;
+            camera.right = aspectRatio;
+            camera.updateProjectionMatrix();
             this.renderer.setSize(window.innerWidth, window.innerHeight);
         });
     }
@@ -42,7 +54,7 @@ export class WebGLContext {
         return this.scene;
     }
 
-    public getCamera(): THREE.PerspectiveCamera {
+    public getCamera(): THREE.Camera {
         return this.camera;
     }
 }

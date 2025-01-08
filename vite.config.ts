@@ -1,13 +1,17 @@
-import { defineConfig } from 'vite'
+// vite.config.ts
+import { defineConfig } from 'vite';
 
-// https://vitejs.dev/config/
 export default defineConfig({
+  assetsInclude: ['**/*.frag', '**/*.vert'],
   css: {
     postcss: './postcss.config.js'
   },
   resolve: {
     alias: {
-      '@': '/src'
+      '@': '/src',
     }
+  },
+  optimizeDeps: {
+    exclude: ['cosmic-kaleidoscope.frag']
   }
-})
+});

@@ -5,10 +5,11 @@ export class StarFieldEffect implements IEffect {
     private material: THREE.ShaderMaterial;
     private mesh: THREE.Mesh;
     private mousePosition: THREE.Vector4;
-    private noiseTexture: THREE.Texture;
+    private noiseTexture: THREE.DataTexture;
+    private time: number = 0;
 
     constructor(fragmentShader: string) {
-        // Create noise texture for iChannel0
+        // Create noise texture
         const size = 256;
         const data = new Float32Array(size * size * 4);
         for(let i = 0; i < data.length; i++) {
@@ -27,6 +28,11 @@ export class StarFieldEffect implements IEffect {
         
         this.material = new THREE.ShaderMaterial({
             fragmentShader,
+            vertexShader: `
+                void main() {
+                    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                }
+            `,
             uniforms: {
                 iTime: { value: 0 },
                 iResolution: { value: new THREE.Vector3() },
@@ -40,8 +46,9 @@ export class StarFieldEffect implements IEffect {
         this.mesh = new THREE.Mesh(geometry, this.material);
     }
 
-    public update(deltaTime: number, time: number): void {
-        this.material.uniforms.iTime.value = time;
+    public update(deltaTime: number): void {
+        this.time += deltaTime;
+        this.material.uniforms.iTime.value = this.time;
         this.material.uniforms.iTimeDelta.value = deltaTime;
     }
 

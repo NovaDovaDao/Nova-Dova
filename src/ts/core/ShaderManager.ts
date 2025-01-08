@@ -13,7 +13,8 @@ export class ShaderManager {
             'hero.frag',
             'noise.frag',
             'patterns.frag',
-            'common.vert'
+            'common.vert',
+            'background.frag'
         ];
 
         await Promise.all(shaderFiles.map(async (file) => {

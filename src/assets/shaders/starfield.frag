@@ -34,6 +34,10 @@ float Hash21(vec2 p) {
     return fract(p.x*p.y);
 }
 
+vec2 N(float angle) {
+    return vec2(sin(angle), cos(angle));
+}
+
 vec3 StarLayer(vec2 uv) {
     vec3 col = vec3(0.);
     
@@ -49,8 +53,7 @@ vec3 StarLayer(vec2 uv) {
             vec2 p = vec2(n, fract(n*34.));
             float star = Star(gv - offs - p + .5, smoothstep(.8, 1., size) * .6);
             
-            // Create more vibrant color variation
-            vec3 hueShift = fract(n*2345.2)*vec3(.2, .3, .9)*123.2;
+            vec3 hueShift = fract(n*2345.2 + dot(uv /420.,vec2(0.25, 0.)))*vec3(.2, .3, .9)*123.2;
             vec3 color = sin(hueShift) * .5 + .5;
             color = color * vec3(1., .25, 1.+size);
             
@@ -59,10 +62,6 @@ vec3 StarLayer(vec2 uv) {
         }
     }
     return col;
-}
-
-vec2 N(float angle) {
-    return vec2(sin(angle), cos(angle));
 }
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {

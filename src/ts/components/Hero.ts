@@ -17,12 +17,10 @@ export class Hero {
     }
 
     private async initialize(): Promise<void> {
-        // Wait for shaders to load
         await this.shaderManager.waitForShaders();
-
+        
         const geometry = new THREE.PlaneGeometry(2, 2);
         
-        // Create material with proper uniforms and defines
         this.material = new THREE.ShaderMaterial({
             fragmentShader: this.shaderManager.getShader('hero.frag'),
             vertexShader: this.shaderManager.getShader('common.vert'),
@@ -35,22 +33,16 @@ export class Hero {
                     )
                 }
             },
-            transparent: true,
-            depthWrite: false,
-            depthTest: false
+            transparent: true
         });
 
         this.mesh = new THREE.Mesh(geometry, this.material);
-        this.mesh.frustumCulled = false; // Ensure mesh is always rendered
-        
-        // Position mesh in front of camera
+        this.mesh.frustumCulled = false;
         this.mesh.position.z = 0;
-        this.context.getCamera().position.z = 1;
         
         this.context.getScene().add(this.mesh);
         this.initialized = true;
 
-        // Add resize handler for resolution uniform
         window.addEventListener('resize', () => {
             if (this.material) {
                 this.material.uniforms.u_resolution.value.set(
@@ -69,5 +61,13 @@ export class Hero {
                 this.context.getCamera()
             );
         }
+    }
+
+    public getScene(): THREE.Scene {
+        return this.context.getScene();
+    }
+
+    public getContext(): WebGLContext {
+        return this.context;
     }
 }
