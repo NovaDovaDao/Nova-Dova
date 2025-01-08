@@ -7,12 +7,22 @@ export class WebGLContext {
     private camera: THREE.Camera;
 
     constructor(container: HTMLElement) {
+        // Initialize renderer with proper alpha settings
         this.renderer = new THREE.WebGLRenderer({ 
             antialias: true,
             alpha: true,
-            preserveDrawingBuffer: true
+            premultipliedAlpha: false,
+            stencil: false,
+            depth: false,
+            preserveDrawingBuffer: false
         });
+
+        // Set clear color to transparent
+        this.renderer.setClearColor(0x000000, 0);
+        this.renderer.autoClear = true;
+        
         this.scene = new THREE.Scene();
+        this.scene.background = null; // Ensure scene background is transparent
         
         // Use orthographic camera for 2D effects
         const aspectRatio = window.innerWidth / window.innerHeight;
@@ -22,7 +32,6 @@ export class WebGLContext {
             0.1, 100
         );
         
-        // Position camera
         this.camera.position.z = 1;
         
         this.initializeRenderer(container);
@@ -32,7 +41,14 @@ export class WebGLContext {
     private initializeRenderer(container: HTMLElement): void {
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         this.renderer.setPixelRatio(window.devicePixelRatio);
+        
+        // Ensure container is transparent
+        container.style.backgroundColor = 'transparent';
         container.appendChild(this.renderer.domElement);
+
+        // Set canvas to be transparent
+        const canvas = this.renderer.domElement;
+        canvas.style.background = 'transparent';
     }
 
     private handleResize(): void {
@@ -56,5 +72,9 @@ export class WebGLContext {
 
     public getCamera(): THREE.Camera {
         return this.camera;
+    }
+
+    public render(): void {
+        this.renderer.render(this.scene, this.camera);
     }
 }
