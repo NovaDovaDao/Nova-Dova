@@ -8,20 +8,40 @@ export class ShaderManager {
         this.initialized = this.loadShaders();
     }
 
+    private async loadShader(name: string): Promise<string> {
+        try {
+            const response = await fetch(`/src/assets/shaders/${name}`);
+            if (!response.ok) {
+                throw new Error(`Failed to load shader: ${name}`);
+            }
+            return await response.text();
+        } catch (error) {
+            console.error(`Error loading shader ${name}:`, error);
+            throw error;
+        }
+    }
+
     private async loadShaders(): Promise<void> {
         const shaderFiles = [
-            'hero.frag',
+            'cosmic-kaleidoscope.frag',
+            'common.vert',
+            'background.frag',
             'noise.frag',
             'patterns.frag',
-            'common.vert',
-            'background.frag'
+            'starfield.frag',
+            'kaleidoscopic.frag',
+            'hero.frag'
         ];
 
-        await Promise.all(shaderFiles.map(async (file) => {
-            const response = await fetch(`/src/assets/shaders/${file}`);
-            const shader = await response.text();
-            this.shaders.set(file, shader);
-        }));
+        try {
+            await Promise.all(shaderFiles.map(async (file) => {
+                const shader = await this.loadShader(file);
+                this.shaders.set(file, shader);
+            }));
+        } catch (error) {
+            console.error('Failed to load shaders:', error);
+            throw error;
+        }
     }
 
     public async waitForShaders(): Promise<void> {
@@ -29,6 +49,10 @@ export class ShaderManager {
     }
 
     public getShader(name: string): string | undefined {
-        return this.shaders.get(name);
+        const shader = this.shaders.get(name);
+        if (!shader) {
+            console.warn(`Shader not found: ${name}`);
+        }
+        return shader;
     }
 }
