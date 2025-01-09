@@ -24,3 +24,5 @@ dist-ssr
 *.sw?
 populate_files.sh
 .aider*
+.env
+.env.local
