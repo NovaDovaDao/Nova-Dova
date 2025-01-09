@@ -1,8 +1,7 @@
 interface AgentData {
     name: string;
-    bio: string;
     description: string;
-    clients: string[];
+    aiModel: string[];
 }
 
 export class AgentCard {
@@ -25,14 +24,13 @@ export class AgentCard {
                 <h3 class="text-xl font-semibold bg-gradient-to-r from-space-blue to-space-purple bg-clip-text text-transparent">
                     ${data.name}
                 </h3>
-                <p class="text-gray-400 mt-2">${data.bio}</p>
                 <p class="text-gray-300 mt-4">${data.description}</p>
                 <div class="mt-4">
-                    <h4 class="text-sm font-semibold text-gray-400">Clients</h4>
+                    <h4 class="text-sm font-semibold text-gray-400">AI Model</h4>
                     <div class="flex flex-wrap gap-2 mt-2">
-                        ${data.clients.map(client => `
+                        ${data.aiModel.map(aiModel => `
                             <span class="px-2 py-1 text-xs bg-gray-700 rounded-full text-gray-300">
-                                ${client}
+                                ${aiModel}
                             </span>
                         `).join('')}
                     </div>

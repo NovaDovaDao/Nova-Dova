@@ -84,8 +84,7 @@ export class DashboardComponent {
     }
 
     private createNewAgent(): void {
-        // Implement agent creation logic
-        console.log('Creating new agent...');
+        window.location.href = '/agent-builder.html';
     }
 
     private loadAgents(): void {
@@ -98,19 +97,19 @@ export class DashboardComponent {
                 name: 'Analysis Agent',
                 bio: 'Specialized in data analysis and pattern recognition',
                 description: 'Processes complex datasets to extract meaningful insights',
-                clients: ['Data Corp', 'Analytics Inc']
+                aiModel: ['Ollama']
             },
             {
                 name: 'Research Assistant',
                 bio: 'Advanced research and information gathering',
                 description: 'Conducts thorough research and synthesizes information',
-                clients: ['Research Lab', 'Academic Institute']
+                aiModel: ['Anthropic', 'Ollama']
             },
             {
                 name: 'Creative AI',
                 bio: 'Creative content generation and ideation',
                 description: 'Generates innovative ideas and creative content',
-                clients: ['Creative Studio', 'Media Agency']
+                aiModel: ['flux', 'OpenAI']
             }
         ];
 
