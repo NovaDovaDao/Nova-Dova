@@ -9,9 +9,9 @@ interface TagInputOptions {
     onTagRemove?: (tag: string) => void;
     validateTag?: (tag: string) => boolean;
     customStyles?: {
-        tag?: string;
+        tag: string;
         input?: string;
-        removeButton?: string;
+        removeButton: string;
     };
 }
 
@@ -21,14 +21,16 @@ export class TagInput {
     private tags: Set<string> = new Set();
     private options: Required<TagInputOptions>;
 
-    private static defaultOptions: Partial<TagInputOptions> = {
+    private static defaultOptions: Required<TagInputOptions> = {
+        containerId: '',
+        inputId: '',
         placeholder: 'Add tag and press Enter',
         maxTags: Infinity,
         onTagAdd: () => {},
         onTagRemove: () => {},
         validateTag: () => true,
         customStyles: {
-            tag: 'inline-flex items-center gap-1 px-3 py-1 rounded-full bg-gray-700/50 border border-gray-600 text-sm',
+            tag: 'inline-flex items-center gap-1 px-3 py-1 rounded-full bg-gray-700/50 border border-gray-700 text-sm',
             input: 'mt-2 block w-full px-3 py-2 bg-gray-700/50 border border-gray-600 rounded-lg text-white shadow-sm focus:border-space-purple focus:ring focus:ring-space-purple/20 transition-colors',
             removeButton: 'ml-1 hover:text-red-400 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500/40 rounded'
         }
@@ -51,7 +53,7 @@ export class TagInput {
     }
 
     private setupEventListeners(): void {
-        this.input.addEventListener('keydown', (e) => {
+        this.input.addEventListener('keydown', (e: KeyboardEvent) => {
             if (e.key === 'Enter') {
                 e.preventDefault();
                 this.handleTagAddition();
@@ -60,11 +62,16 @@ export class TagInput {
             }
         });
 
-        this.input.addEventListener('paste', (e) => {
+        this.input.addEventListener('paste', (e: ClipboardEvent) => {
             e.preventDefault();
-            const pastedText = (e.clipboardData || window.clipboardData).getData('text');
-            const tags = pastedText.split(/[,\n\t]/).map(tag => tag.trim()).filter(Boolean);
-            tags.forEach(tag => this.addTag(tag));
+            const clipboardData = e.clipboardData || (window as any).clipboardData;
+            if (clipboardData) {
+                const pastedText = clipboardData.getData('text');
+                const tags = pastedText.split(/[,\n\t]/)
+                    .map((tag: string) => tag.trim())
+                    .filter((tag: string) => tag.length > 0);
+                tags.forEach((tag: string) => this.addTag(tag));
+            }
         });
     }
 
@@ -96,14 +103,14 @@ export class TagInput {
 
     private createTagElement(tag: string): void {
         const tagElement = document.createElement('div');
-        tagElement.className = this.options.customStyles.tag;
+        tagElement.className = this.options.customStyles.tag || TagInput.defaultOptions.customStyles.tag;
         
         const text = document.createElement('span');
         text.textContent = tag;
         
         const removeButton = document.createElement('button');
         removeButton.innerHTML = '×';
-        removeButton.className = this.options.customStyles.removeButton;
+        removeButton.className = this.options.customStyles.removeButton || TagInput.defaultOptions.customStyles.removeButton;
         removeButton.addEventListener('click', () => this.removeTag(tag));
 
         tagElement.appendChild(text);
@@ -113,8 +120,11 @@ export class TagInput {
 
     private removeTag(tag: string): void {
         this.tags.delete(tag);
-        const tagElements = this.container.getElementsByClassName(this.options.customStyles.tag);
-        for (const element of Array.from(tagElements)) {
+        const defaultTagClass = TagInput.defaultOptions.customStyles.tag;
+        const tagClass = this.options.customStyles.tag || defaultTagClass;
+        const tagElements = Array.from(this.container.getElementsByClassName(tagClass));
+        
+        for (const element of tagElements) {
             if (element instanceof HTMLElement && element.textContent?.includes(tag)) {
                 element.remove();
                 break;
@@ -131,7 +141,6 @@ export class TagInput {
     }
 
     private showError(message: string): void {
-        // Create error message element
         const errorElement = document.createElement('div');
         errorElement.className = `
             fixed bottom-4 right-4 px-4 py-2
@@ -141,7 +150,6 @@ export class TagInput {
         `;
         errorElement.textContent = message;
 
-        // Add to DOM and remove after delay
         document.body.appendChild(errorElement);
         setTimeout(() => {
             errorElement.style.transform = 'translateY(200%)';
@@ -156,10 +164,7 @@ export class TagInput {
     }
 
     public setTags(tags: string[]): void {
-        // Clear existing tags
         this.clear();
-        
-        // Add new tags
         tags.forEach(tag => this.addTag(tag));
     }
 

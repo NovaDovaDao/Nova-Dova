@@ -15,6 +15,7 @@ interface AgentFormData {
     goals: string;
     adjectives: string[];
     topics: string[];
+    [key: string]: string | string[]; // Add index signature
 }
 
 class AgentBuilder {
@@ -22,8 +23,8 @@ class AgentBuilder {
     private animationLoop: AnimationLoop;
     private cosmicEffect: CosmicBackgroundEffect;
     private formData: AgentFormData;
-    private adjectivesInput: TagInput;
-    private topicsInput: TagInput;
+    private adjectivesInput!: TagInput; // Use definite assignment assertion
+    private topicsInput!: TagInput;
 
     constructor() {
         const container = document.getElementById('agentBuilderCanvas');
@@ -87,7 +88,7 @@ class AgentBuilder {
     }
 
     private setupFormListeners(): void {
-        // Basic form field listeners
+        // Update the form field listener to handle both string and string[] types
         const formFields = ['agentName', 'description', 'aiModel', 'messageExamples', 'postExamples', 'goals'];
         
         formFields.forEach(fieldName => {
@@ -95,8 +96,7 @@ class AgentBuilder {
             if (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement || element instanceof HTMLSelectElement) {
                 element.addEventListener('input', (e) => {
                     const target = e.target as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement;
-                    this.formData[fieldName as keyof AgentFormData] = target.value;
-                    this.updatePreview();
+                    (this.formData[fieldName] as string) = target.value; // Type assertion
                 });
             }
         });
