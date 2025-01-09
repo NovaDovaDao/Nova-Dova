@@ -20,19 +20,25 @@ export default defineConfig({
       '@': resolve(__dirname, './src'),
     }
   },
+  assetsInclude: ['**/*.frag', '**/*.vert', '**/*.glsl'],
   server: {
     fs: {
       allow: [
-        // Allow serving files from project root
         process.cwd(),
-        // Allow node_modules
         'node_modules',
       ],
       strict: false
     }
   },
-  optimizeDeps: {
-    exclude: ['cosmic-kaleidoscope.frag']
-  },
-  assetsInclude: ['**/*.frag', '**/*.vert', '**/*.glsl'],
+  plugins: [{
+    name: 'vite-plugin-glsl',
+    transform(code, id) {
+      if (/\.(glsl|vert|frag)$/.test(id)) {
+        return {
+          code: `export default ${JSON.stringify(code)};`,
+          map: null
+        };
+      }
+    }
+  }]
 });
