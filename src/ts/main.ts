@@ -1,5 +1,6 @@
 // src/ts/main.ts
 import '../styles/main.css';
+import '../styles/animations.css';
 import { Hero } from './components/Hero';
 import { Navigation } from './components/Navigation';
 import { AIInterface } from './components/AIInterface';
