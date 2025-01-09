@@ -6,8 +6,8 @@ import { AIInterface } from './components/AIInterface';
 import { AnimationLoop } from './core/AnimationLoop';
 import { CosmicBackgroundEffect } from './effects/CosmicBackgroundEffect';
 
-// Import shader directly
-const shaderPath = '/src/assets/shaders/cosmic-kaleidoscope.frag';
+// Import shader directly using Vite's ?raw query
+import cosmicShader from '../assets/shaders/cosmic-kaleidoscope.frag?raw';
 
 document.addEventListener('DOMContentLoaded', async () => {
     try {
@@ -20,19 +20,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             document.body.prepend(heroCanvas);
         }
 
-        // Load shader
-        const response = await fetch(shaderPath);
-        if (!response.ok) {
-            throw new Error(`Failed to load shader: ${response.statusText}`);
-        }
-        const cosmicShader = await response.text();
-
         // Initialize components
         const hero = new Hero(heroCanvas);
         const nav = new Navigation();
         const aiInterface = new AIInterface();
         
-        // Create cosmic effect
+        // Create cosmic effect with imported shader
         const cosmicEffect = new CosmicBackgroundEffect(cosmicShader);
 
         // Wait a frame to ensure everything is initialized
