@@ -123,15 +123,15 @@ export class LoadingPage {
                 this.handleResize([{ contentRect: { width, height } } as ResizeObserverEntry]);
             }, 100);
         });
-
+    
         document.addEventListener('visibilitychange', () => {
             if (document.hidden) {
-                this.animationLoop.pause?.();
+                this.animationLoop.pause();  // Remove optional chaining
             } else {
-                this.animationLoop.resume?.();
+                this.animationLoop.resume(); // Remove optional chaining
             }
         });
-
+    
         this.container.addEventListener('touchmove', (e) => {
             e.preventDefault();
             if (e.touches[0]) {
