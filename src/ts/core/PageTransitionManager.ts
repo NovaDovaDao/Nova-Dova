@@ -23,23 +23,21 @@ export class PageTransitionManager {
         }
 
         this.currentTransition = (async () => {
-            // Show black backdrop immediately
-            this.loadingPage.preload();
-            
-            // Small delay to ensure the backdrop is visible
-            await new Promise(resolve => setTimeout(resolve, 50));
-            
-            // Show the full loader
-            this.loadingPage.show();
-            
-            // Minimum loading time for visual consistency
-            await Promise.all([
-                callback(),
-                new Promise(resolve => setTimeout(resolve, 1200))
-            ]);
-
-            this.loadingPage.hide();
-            this.currentTransition = null;
+            try {
+                // Show loader
+                this.loadingPage.show();
+                
+                // Minimum loading time for visual consistency
+                await Promise.all([
+                    callback(),
+                    new Promise(resolve => setTimeout(resolve, 1200))
+                ]);
+            } catch (error) {
+                console.error('Transition error:', error);
+            } finally {
+                this.loadingPage.hide();
+                this.currentTransition = null;
+            }
         })();
 
         return this.currentTransition;

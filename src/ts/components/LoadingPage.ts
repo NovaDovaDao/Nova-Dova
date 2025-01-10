@@ -11,6 +11,7 @@ export class LoadingPage {
     private loadingText: HTMLElement;
     private isVisible: boolean = false;
     private backdrop: HTMLElement;
+    private resizeObserver: ResizeObserver;
 
     constructor() {
         this.backdrop = this.createBackdrop();
@@ -20,7 +21,12 @@ export class LoadingPage {
         this.animationLoop = new AnimationLoop();
         this.loadingText = this.createLoadingText();
         
+        // Initialize resize observer
+        this.resizeObserver = new ResizeObserver(this.handleResize.bind(this));
+        this.resizeObserver.observe(this.container);
+        
         this.initialize();
+        this.setupEventListeners();
     }
 
     private createBackdrop(): HTMLElement {
@@ -33,7 +39,14 @@ export class LoadingPage {
     private createContainer(): HTMLElement {
         const container = document.createElement('div');
         container.id = 'loadingPage';
-        container.className = 'fixed inset-0 z-50 flex items-center justify-center opacity-0 transform scale-95 pointer-events-none transition-all duration-300';
+        container.className = `
+            fixed inset-0 z-50 
+            flex items-center justify-center 
+            opacity-0 transform scale-95 pointer-events-none 
+            transition-all duration-300
+            overflow-hidden
+            touch-none
+        `;
         container.style.background = 'transparent';
         document.body.appendChild(container);
         return container;
@@ -41,14 +54,27 @@ export class LoadingPage {
 
     private createLoadingText(): HTMLElement {
         const textContainer = document.createElement('div');
-        textContainer.className = 'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-center z-50';
+        textContainer.className = `
+            absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 
+            text-center z-50 
+            w-full max-w-[90vw] px-4
+        `;
         
         const text = document.createElement('div');
-        text.className = 'text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-space-blue to-space-purple animate-pulse-slow';
+        text.className = `
+            font-bold text-transparent bg-clip-text 
+            bg-gradient-to-r from-space-blue to-space-purple 
+            animate-pulse-slow
+            text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl
+        `;
         text.textContent = 'NOVA DOVA DAO';
         
         const subtext = document.createElement('div');
-        subtext.className = 'mt-6 text-xl text-gray-400 opacity-75';
+        subtext.className = `
+            mt-2 sm:mt-4 md:mt-6
+            text-base sm:text-lg md:text-xl lg:text-2xl
+            text-gray-400 opacity-75
+        `;
         subtext.innerHTML = 'Loading<span class="animate-pulse">...</span>';
         
         textContainer.appendChild(text);
@@ -58,54 +84,81 @@ export class LoadingPage {
         return textContainer;
     }
 
+    private handleResize(entries: ResizeObserverEntry[]): void {
+        const entry = entries[0];
+        if (entry) {
+            const { width, height } = entry.contentRect;
+            this.context.getRenderer().setSize(width, height);
+            this.shaderManager.updateResolution(width, height);
+            
+            // Update pixel ratio on resize
+            const pixelRatio = Math.min(window.devicePixelRatio, 2);
+            this.context.getRenderer().setPixelRatio(pixelRatio);
+        }
+    }
+
     private initialize(): void {
         const scene = this.context.getScene();
         scene.add(this.shaderManager.getMesh());
 
-        // Set initial renderer clear color to black
-        this.context.getRenderer().setClearColor(0x000000, 1);
+        // Set initial renderer settings
+        const renderer = this.context.getRenderer();
+        renderer.setClearColor(0x000000, 1);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
         this.animationLoop.addAnimation((deltaTime: number) => {
             if (this.isVisible) {
                 this.shaderManager.update(deltaTime);
-                this.context.getRenderer().render(scene, this.context.getCamera());
+                renderer.render(scene, this.context.getCamera());
             }
         });
 
         this.animationLoop.start();
     }
 
-    public preload(): void {
-        // Show black backdrop immediately before the transition starts
-        this.backdrop.classList.remove('opacity-0');
-        this.backdrop.classList.add('opacity-100');
-        document.body.style.overflow = 'hidden';
+    private setupEventListeners(): void {
+        window.addEventListener('orientationchange', () => {
+            setTimeout(() => {
+                const { width, height } = this.container.getBoundingClientRect();
+                this.handleResize([{ contentRect: { width, height } } as ResizeObserverEntry]);
+            }, 100);
+        });
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                this.animationLoop.pause?.();
+            } else {
+                this.animationLoop.resume?.();
+            }
+        });
+
+        this.container.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            if (e.touches[0]) {
+                const touch = e.touches[0];
+                const rect = this.container.getBoundingClientRect();
+                this.shaderManager.updateMousePosition(
+                    touch.clientX - rect.left,
+                    touch.clientY - rect.top
+                );
+            }
+        }, { passive: false });
     }
 
+    // Public methods that need to be accessible
     public show(): void {
         this.isVisible = true;
-        
-        // Ensure the backdrop is visible
         this.backdrop.classList.remove('opacity-0', 'pointer-events-none');
-        this.backdrop.classList.add('opacity-100');
-        
-        // Show the loader with a slight delay to ensure smooth transition
-        setTimeout(() => {
-            this.container.classList.remove('opacity-0', 'scale-95', 'pointer-events-none');
-            this.container.classList.add('opacity-100', 'scale-100');
-        }, 50);
-        
+        this.container.classList.remove('opacity-0', 'scale-95', 'pointer-events-none');
+        this.container.classList.add('opacity-100', 'scale-100');
         document.body.style.overflow = 'hidden';
     }
 
     public hide(): void {
         this.isVisible = false;
-        
-        // Hide the loader first
         this.container.classList.add('opacity-0', 'scale-95', 'pointer-events-none');
         this.container.classList.remove('opacity-100', 'scale-100');
         
-        // Hide the backdrop with a slight delay
         setTimeout(() => {
             this.backdrop.classList.add('opacity-0', 'pointer-events-none');
             this.backdrop.classList.remove('opacity-100');
@@ -116,6 +169,7 @@ export class LoadingPage {
     public dispose(): void {
         this.shaderManager.dispose();
         this.context.getRenderer().dispose();
+        this.resizeObserver.disconnect();
         this.backdrop.remove();
         this.container.remove();
     }

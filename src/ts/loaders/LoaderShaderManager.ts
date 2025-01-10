@@ -1,3 +1,4 @@
+// src/ts/loaders/LoaderShaderManager.ts
 import * as THREE from 'three';
 import loaderShader from '../../assets/shaders/loader.frag?raw';
 
@@ -5,8 +6,11 @@ export class LoaderShaderManager {
     private material: THREE.ShaderMaterial;
     private mesh: THREE.Mesh;
     private time: number = 0;
+    private resolution: THREE.Vector3;
 
     constructor(container: HTMLElement) {
+        this.resolution = new THREE.Vector3();
+        
         this.material = new THREE.ShaderMaterial({
             fragmentShader: loaderShader,
             vertexShader: `
@@ -15,7 +19,7 @@ export class LoaderShaderManager {
                 }
             `,
             uniforms: {
-                iResolution: { value: new THREE.Vector3() },
+                iResolution: { value: this.resolution },
                 iTime: { value: 0 },
                 iTimeDelta: { value: 0 },
                 iMouse: { value: new THREE.Vector4() }
@@ -28,31 +32,20 @@ export class LoaderShaderManager {
         this.mesh.frustumCulled = false;
 
         this.updateResolution(container.clientWidth, container.clientHeight);
-        this.setupEventListeners(container);
-    }
-
-    private setupEventListeners(container: HTMLElement): void {
-        const resizeObserver = new ResizeObserver((entries) => {
-            const { width, height } = entries[0].contentRect;
-            this.updateResolution(width, height);
-        });
-
-        resizeObserver.observe(container);
-
-        container.addEventListener('mousemove', (event) => {
-            const rect = container.getBoundingClientRect();
-            const x = event.clientX - rect.left;
-            const y = rect.height - (event.clientY - rect.top);
-            this.material.uniforms.iMouse.value.set(x, y, 0, 0);
-        });
     }
 
     public updateResolution(width: number, height: number): void {
-        this.material.uniforms.iResolution.value.set(
-            width,
-            height,
+        const pixelRatio = Math.min(window.devicePixelRatio, 2);
+        this.resolution.set(
+            width * pixelRatio,
+            height * pixelRatio,
             1.0
         );
+        this.material.uniforms.iResolution.value = this.resolution;
+    }
+
+    public updateMousePosition(x: number, y: number): void {
+        this.material.uniforms.iMouse.value.set(x, y, 0, 0);
     }
 
     public update(deltaTime: number): void {
