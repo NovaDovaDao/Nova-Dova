@@ -8,6 +8,7 @@ interface WebSocketContextType {
   connected: boolean;
   error: string | null;
   sendMessage: (message: string) => void;
+  tokenBalance: string | null;
 }
 
 const WebSocketContext = createContext<WebSocketContextType | null>(null);
@@ -18,17 +19,13 @@ const WebSocketContext = createContext<WebSocketContextType | null>(null);
 //   timestamp: Date;
 // }
 
-// Get WebSocket URL based on environment
 const getWebSocketUrl = () => {
-  // Default to production URL
   let wsUrl = 'https://comfortable-butterfly-26.deno.dev';
   
-  // Check if we're in development mode
   if (import.meta.env.DEV && import.meta.env.VITE_WEBSOCKET_URL) {
     wsUrl = import.meta.env.VITE_WEBSOCKET_URL;
   }
   
-  console.log('Using WebSocket URL:', wsUrl);
   return wsUrl;
 };
 
@@ -36,7 +33,8 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [socket, setSocket] = useState<Socket | null>(null);
   const [connected, setConnected] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { getAccessToken } = usePrivy();
+  const [tokenBalance, setTokenBalance] = useState<string | null>(null);
+  const { getAccessToken, user } = usePrivy();
 
   useEffect(() => {
     const initializeSocket = async () => {
@@ -47,10 +45,17 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
           return;
         }
 
-        // Initialize socket with the appropriate URL
+        // Get the user's Solana wallet address
+        const solanaWallet = user?.wallet?.solana?.address;
+        if (!solanaWallet) {
+          setError('No Solana wallet connected');
+          return;
+        }
+
         const socketInstance = io(getWebSocketUrl(), {
           auth: {
-            token
+            token,
+            walletAddress: solanaWallet
           },
           transports: ['websocket'],
           reconnection: true,
@@ -58,7 +63,6 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
           reconnectionDelay: 1000
         });
 
-        // Connection event handlers
         socketInstance.on('connect', () => {
           console.log('Connected to WebSocket');
           setConnected(true);
@@ -75,7 +79,6 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
           console.log('Disconnected from WebSocket:', reason);
           setConnected(false);
           if (reason === 'io server disconnect') {
-            // Server initiated disconnect, attempt to reconnect
             socketInstance.connect();
           }
         });
@@ -87,12 +90,18 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
         socketInstance.on('response', (response: string) => {
           console.log('Received response:', response);
-          // You can add additional handling here if needed
+          
+          // Extract token balance from welcome message
+          if (response.includes('Balance:')) {
+            const balanceMatch = response.match(/Balance: (\d+) DOVA/);
+            if (balanceMatch) {
+              setTokenBalance(balanceMatch[1]);
+            }
+          }
         });
 
         setSocket(socketInstance);
 
-        // Cleanup on unmount
         return () => {
           console.log('Cleaning up socket connection');
           socketInstance.disconnect();
@@ -103,8 +112,10 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       }
     };
 
-    initializeSocket();
-  }, [getAccessToken]);
+    if (user?.wallet?.solana) {
+      initializeSocket();
+    }
+  }, [getAccessToken, user?.wallet?.solana]);
 
   const sendMessage = (message: string) => {
     if (!socket) {
@@ -125,15 +136,16 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     }
   };
 
-  const contextValue = {
-    socket,
-    connected,
-    error,
-    sendMessage
-  };
-
   return (
-    <WebSocketContext.Provider value={contextValue}>
+    <WebSocketContext.Provider 
+      value={{
+        socket,
+        connected,
+        error,
+        sendMessage,
+        tokenBalance
+      }}
+    >
       {children}
     </WebSocketContext.Provider>
   );

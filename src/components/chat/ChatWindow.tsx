@@ -26,7 +26,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const { connected, sendMessage, error } = useWebSocket();
+  const { connected, sendMessage, error, tokenBalance } = useWebSocket();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -95,11 +95,23 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
             <h3 className="text-lg font-semibold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
               {agentName}
             </h3>
-            <p className="text-sm text-gray-400">
-              {connected ? 'Connected' : 
-               status === 'loading' ? 'Connecting...' : 
-               'Disconnected'}
-            </p>
+            <div className="flex flex-col">
+              <p className="text-sm text-gray-400">
+                {connected ? 'Connected' : 
+                 status === 'loading' ? 'Connecting...' : 
+                 'Disconnected'}
+              </p>
+              {tokenBalance && connected && (
+                <p className="text-sm text-emerald-400">
+                  Balance: {tokenBalance} DOVA
+                </p>
+              )}
+              {error && (
+                <p className="text-sm text-red-400">
+                  {error}
+                </p>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -124,9 +136,20 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
               <h4 className="text-xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-space-blue to-space-purple">
                 Welcome to {agentName}
               </h4>
-              <p className="text-gray-400 text-sm">
-                {error || "Start a conversation with your AI agent."}
-              </p>
+              <div className="space-y-2">
+                <p className="text-gray-400 text-sm">
+                  {error ? (
+                    <span className="text-red-400">{error}</span>
+                  ) : (
+                    "Connect your Solana wallet with 100000 $DOVA tokens to start chatting."
+                  )}
+                </p>
+                {tokenBalance && (
+                  <p className="text-emerald-400 text-sm">
+                    Current Balance: {tokenBalance} DOVA
+                  </p>
+                )}
+              </div>
             </div>
             {!connected && (
               <Button 
