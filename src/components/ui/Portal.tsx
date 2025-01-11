@@ -5,7 +5,7 @@ import { usePrivy } from "@privy-io/react-auth";
 import { useTransition } from "../../context/TransitionContext";
 import Dashboard from "../../pages/Dashboard";
 import Welcome from "../../pages/Welcome";
-import AgentBuilder from "../../pages/AgentBuilder"; // You'll need to create this
+// import AgentBuilder from "../../pages/AgentBuilder"; // You'll need to create this
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const { authenticated } = usePrivy();
@@ -44,14 +44,14 @@ export default function Portal() {
           </PrivateRoute>
         }
       />
-      <Route
+      {/* <Route
         path="/agent-builder"
         element={
           <PrivateRoute>
             <AgentBuilder />
           </PrivateRoute>
         }
-      />
+      /> */}
       {/* Add more routes as needed */}
     </Routes>
   );
