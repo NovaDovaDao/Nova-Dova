@@ -26,3 +26,5 @@ populate_files.sh
 .aider*
 .env
 .env.local
+.env.production
+.env.development

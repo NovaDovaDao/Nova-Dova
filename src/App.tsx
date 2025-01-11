@@ -3,6 +3,7 @@ import { PrivyProvider } from "@privy-io/react-auth";
 import { BrowserRouter } from "react-router-dom";
 import { WebGLProvider } from "./context/WebGLContext";
 import { TransitionProvider } from "./context/TransitionContext";
+import { WebSocketProvider } from "./context/WebSocketContext";
 import { RootLayout } from "./components/layout/RootLayout";
 import Portal from "./components/ui/Portal";
 import { LoadingTransition } from "./components/effects/LoadingTransition";
@@ -33,14 +34,16 @@ function App() {
           },
         }}
       >
-        <WebGLProvider>
-          <TransitionProvider>
-            <RootLayout>
-              <LoadingTransition initialLoading={initialLoading} />
-              <Portal />
-            </RootLayout>
-          </TransitionProvider>
-        </WebGLProvider>
+        <WebSocketProvider>
+          <WebGLProvider>
+            <TransitionProvider>
+              <RootLayout>
+                <LoadingTransition initialLoading={initialLoading} />
+                <Portal />
+              </RootLayout>
+            </TransitionProvider>
+          </WebGLProvider>
+        </WebSocketProvider>
       </PrivyProvider>
     </BrowserRouter>
   );
