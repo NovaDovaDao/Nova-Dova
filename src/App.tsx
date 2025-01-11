@@ -1,6 +1,5 @@
-import "./App.css";
 import { PrivyProvider } from "@privy-io/react-auth";
-import NovaPortal from "./components/NovaPortal";
+import Portal from "./components/Portal";
 
 function App() {
   return (
@@ -18,7 +17,7 @@ function App() {
         },
       }}
     >
-      <NovaPortal />
+      <Portal />
     </PrivyProvider>
   );
 }
