@@ -1,12 +1,11 @@
 // src/context/WebGLContext.tsx
-import React, { createContext, useContext, useRef, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import * as THREE from 'three';
 
 interface WebGLContextType {
   renderer: THREE.WebGLRenderer | null;
   scene: THREE.Scene | null;
   camera: THREE.Camera | null;
-  updateShader: (shader: string) => void;
   setSize: (width: number, height: number) => void;
   addToScene: (object: THREE.Object3D) => void;
   removeFromScene: (object: THREE.Object3D) => void;
@@ -58,10 +57,6 @@ export const WebGLProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     };
   }, [camera]);
 
-  const updateShader = (shader: string) => {
-    // Shader update logic here
-  };
-
   const setSize = (width: number, height: number) => {
     if (renderer) {
       renderer.setSize(width, height);
@@ -81,8 +76,7 @@ export const WebGLProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       value={{ 
         renderer, 
         scene, 
-        camera, 
-        updateShader, 
+        camera,
         setSize, 
         addToScene, 
         removeFromScene 

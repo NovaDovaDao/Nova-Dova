@@ -1,7 +1,9 @@
+// src/components/ui/AgentCard.tsx
 import React from 'react';
 import { Button } from './Button';
 
 interface AgentCardProps {
+  id: string;
   name: string;
   description: string;
   aiModels: string[];
@@ -9,6 +11,7 @@ interface AgentCardProps {
 }
 
 export const AgentCard = React.memo(({ 
+//   id,
   name, 
   description, 
   aiModels, 
@@ -35,7 +38,11 @@ export const AgentCard = React.memo(({
           </div>
         </div>
         <div className="mt-auto pt-4 flex justify-end">
-          <Button onClick={onConnect}>
+          <Button 
+            onClick={onConnect}
+            variant="primary"
+            withGlow
+          >
             Connect
           </Button>
         </div>

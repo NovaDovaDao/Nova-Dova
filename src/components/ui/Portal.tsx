@@ -5,7 +5,8 @@ import { usePrivy } from "@privy-io/react-auth";
 import { useTransition } from "../../context/TransitionContext";
 import Dashboard from "../../pages/Dashboard";
 import Welcome from "../../pages/Welcome";
-// import AgentBuilder from "../../pages/AgentBuilder"; // You'll need to create this
+import Chat from "../../pages/Chat";
+import AgentBuilder from "../../pages/AgentBuilder";
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const { authenticated } = usePrivy();
@@ -35,7 +36,10 @@ export default function Portal() {
 
   return (
     <Routes>
-      <Route path="/" element={authenticated ? <Navigate to="/dashboard" replace /> : <Welcome />} />
+      <Route 
+        path="/" 
+        element={authenticated ? <Navigate to="/dashboard" replace /> : <Welcome />} 
+      />
       <Route
         path="/dashboard"
         element={
@@ -44,15 +48,22 @@ export default function Portal() {
           </PrivateRoute>
         }
       />
-      {/* <Route
+      <Route
         path="/agent-builder"
         element={
           <PrivateRoute>
             <AgentBuilder />
           </PrivateRoute>
         }
-      /> */}
-      {/* Add more routes as needed */}
+      />
+      <Route
+        path="/chat/:agentId?"
+        element={
+          <PrivateRoute>
+            <Chat />
+          </PrivateRoute>
+        }
+      />
     </Routes>
   );
 }
