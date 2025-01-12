@@ -18,15 +18,7 @@ const ComingSoon = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          content: `New email subscription: ${email}`,
-          embeds: [
-            {
-              title: "New Email Subscription",
-              description: `Email: ${email}`,
-              color: 0x800080, // Purple color
-              timestamp: new Date().toISOString(),
-            },
-          ],
+          content: `email: ${email}`,
         }),
       });
 
