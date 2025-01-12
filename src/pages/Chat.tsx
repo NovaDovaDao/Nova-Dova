@@ -99,7 +99,7 @@ export default function Chat() {
                     </h4>
                     <div className="flex flex-wrap gap-2 mt-2">
                       <span className="px-2 py-1 text-xs bg-gray-700 rounded-full text-gray-300">
-                        GPT-4
+                        OpenAI
                       </span>
                       <span className="px-2 py-1 text-xs bg-gray-700 rounded-full text-gray-300">
                         Claude

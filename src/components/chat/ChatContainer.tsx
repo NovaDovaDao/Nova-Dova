@@ -67,7 +67,7 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({ className = '' }) 
               <h4 className="text-sm font-medium text-gray-300 mb-2">Models</h4>
               <div className="flex flex-wrap gap-2">
                 <span className="px-3 py-1 text-xs rounded-full bg-gray-700 text-gray-300">
-                  GPT-4
+                  OpenAI
                 </span>
                 <span className="px-3 py-1 text-xs rounded-full bg-gray-700 text-gray-300">
                   Claude
