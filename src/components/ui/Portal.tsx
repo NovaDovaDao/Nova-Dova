@@ -38,8 +38,8 @@ export default function Portal() {
     <Routes>
       <Route 
         path="/"
-        element={authenticated ? <Navigate to="/coming-soon" replace /> : <Welcome />}
-        // element={authenticated ? <Navigate to="/dashboard" replace /> : <Welcome />}
+        // element={authenticated ? <Navigate to="/coming-soon" replace /> : <Welcome />}
+        element={authenticated ? <Navigate to="/dashboard" replace /> : <Welcome />}
       />
       <Route
         path="/coming-soon"
