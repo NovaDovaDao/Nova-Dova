@@ -97,7 +97,7 @@ const ComingSoon = () => {
                      leading-relaxed tracking-wide"
           >
             We are building the next evolution of AI agents. Stay tuned for
-            updates and announcements.
+            updates and announcements. Token holders will be first to test the product demo.
           </p>
 
           {/* CA Display */}
