@@ -6,11 +6,34 @@ const ComingSoon = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle email submission logic here
-    setIsSubmitted(true);
-    setTimeout(() => setIsSubmitted(false), 3000);
+    try {
+      const webhookUrl = 'https://discord.com/api/webhooks/1328032309219168437/B-O6gWkavZmeEYM5Zv7kUO8Vi0zJL4316PA-gczliF981myhYxaUamQeeGyRp00t6Blg';
+      
+      await fetch(webhookUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          content: `New email subscription: ${email}`,
+          embeds: [{
+            title: 'New Email Subscription',
+            description: `Email: ${email}`,
+            color: 0x800080, // Purple color
+            timestamp: new Date().toISOString()
+          }]
+        })
+      });
+
+      setIsSubmitted(true);
+      setEmail(''); // Clear the input after successful submission
+      setTimeout(() => setIsSubmitted(false), 3000);
+    } catch (error) {
+      console.error('Error submitting email:', error);
+      // You might want to show an error message to the user here
+    }
   };
 
   const socialLinks = [
@@ -75,7 +98,7 @@ const ComingSoon = () => {
           <p className="text-xl md:text-2xl text-gray-300 mb-12 max-w-2xl mx-auto 
                      leading-relaxed tracking-wide">
             We're crafting something extraordinary. The next evolution of AI agents 
-            is about to be unleashed. Be the first to experience it.
+            is about to be unleashed.
           </p>
 
           {/* CA Display */}
