@@ -11,8 +11,7 @@ import { useState, useEffect } from "react";
 import { toSolanaWalletConnectors } from "@privy-io/react-auth/solana";
 
 const solanaConnectors = toSolanaWalletConnectors({
-  // By default, shouldAutoConnect is enabled
-  shouldAutoConnect: true,
+  shouldAutoConnect: false,
 });
 
 function App() {
