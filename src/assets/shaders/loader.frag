@@ -1,67 +1,66 @@
 precision highp float;
 
-uniform vec3 iResolution;
-uniform float iTime;
-uniform float iTimeDelta;
-uniform vec4 iMouse;
+uniform vec3      iResolution;           // viewport resolution (in pixels)
+uniform float     iTime;                 // shader playback time (in seconds)
+uniform float     iTimeDelta;            // render time (in seconds)
+uniform float     iFrameRate;            // shader frame rate
+uniform int       iFrame;                // shader playback frame
+uniform float     iChannelTime[4];       // channel playback time (in seconds)
+uniform vec3      iChannelResolution[4]; // channel resolution (in pixels)
+uniform vec4      iMouse;                // mouse pixel coords. xy: current (if MLB down), zw: click
+uniform vec4      iDate;                 // (year, month, day, time in seconds)
 
 vec3 palette(float d) {
-    return mix(vec3(0.2,0.7,0.9),vec3(1.,0.,1.),d);
+    return mix(vec3(0.2, 0.7, 0.9), vec3(1.0, 0.0, 1.0), d);
 }
 
-vec2 rotate(vec2 p,float a) {
+vec2 rotate(vec2 p, float a) {
     float c = cos(a);
     float s = sin(a);
-    return p*mat2(c,s,-s,c);
+    return p * mat2(c, s, -s, c);
 }
 
 float map(vec3 p) {
-    for(int i = 0; i<8; ++i) {
-        float t = iTime*0.2;
-        p.xz = rotate(p.xz,t);
-        p.xy = rotate(p.xy,t*1.89);
+    for(int i = 0; i < 8; ++i) {
+        float t = iTime * 0.2;
+        p.xz = rotate(p.xz, t);
+        p.xy = rotate(p.xy, t * 1.89);
         p.xz = abs(p.xz);
-        p.xz-=.5;
+        p.xz -= 0.5;
     }
-    return dot(sign(p),p)/5.;
+    return dot(sign(p), p) / 5.0;
 }
 
 vec4 rm(vec3 ro, vec3 rd) {
-    float t = 0.;
-    vec3 col = vec3(0.);
+    float t = 0.0;
+    vec3 col = vec3(0.0);
     float d;
-    for(float i =0.; i<64.; i++) {
-        vec3 p = ro + rd*t;
-        d = map(p)*.5;
-        if(d<0.02) {
+    
+    for(float i = 0.0; i < 64.0; i++) {
+        vec3 p = ro + rd * t;
+        d = map(p) * 0.5;
+        if(d < 0.02) {
             break;
         }
-        if(d>100.) {
+        if(d > 100.0) {
             break;
         }
-        col+=palette(length(p)*.1)/(400.*(d));
-        t+=d;
+        col += palette(length(p) * 0.1) / (400.0 * (d));
+        t += d;
     }
-    return vec4(col,1./(d*100.));
-}
-
-void mainImage(out vec4 fragColor, in vec2 fragCoord) {
-    vec2 uv = (fragCoord-(iResolution.xy/2.))/iResolution.x;
-    vec3 ro = vec3(0.,0.,-50.);
-    ro.xz = rotate(ro.xz,iTime);
-    vec3 cf = normalize(-ro);
-    vec3 cs = normalize(cross(cf,vec3(0.,1.,0.)));
-    vec3 cu = normalize(cross(cf,cs));
-    
-    vec3 uuv = ro+cf*3. + uv.x*cs + uv.y*cu;
-    
-    vec3 rd = normalize(uuv-ro);
-    
-    vec4 col = rm(ro,rd);
-    
-    fragColor = col;
+    return vec4(col, 1.0 / (d * 100.0));
 }
 
 void main() {
-    mainImage(gl_FragColor, gl_FragCoord.xy);
+    vec2 uv = (gl_FragCoord.xy - (iResolution.xy / 2.0)) / iResolution.x;
+    vec3 ro = vec3(0.0, 0.0, -50.0);
+    ro.xz = rotate(ro.xz, iTime);
+    vec3 cf = normalize(-ro);
+    vec3 cs = normalize(cross(cf, vec3(0.0, 1.0, 0.0)));
+    vec3 cu = normalize(cross(cf, cs));
+    
+    vec3 uuv = ro + cf * 3.0 + uv.x * cs + uv.y * cu;
+    vec3 rd = normalize(uuv - ro);
+    
+    gl_FragColor = rm(ro, rd);
 }

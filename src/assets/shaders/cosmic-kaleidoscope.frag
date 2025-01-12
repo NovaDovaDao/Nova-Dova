@@ -33,15 +33,15 @@ float Hash21(vec2 p) {
     return fract(p.x * p.y);
 }
 
-float getStarFieldMask(vec2 uv, vec2 mousePos) {
-    // Calculate distance from mouse position
-    float dist = length(uv - mousePos);
+float getStarFieldMask(vec2 uv) {
+    // Calculate distance from center
+    float dist = length(uv);
     
-    // Create a radial gradient from mouse position
+    // Create a radial gradient from center
     float mask = 1.0 - smoothstep(0.0, 2.0, dist);
     
-    // Add variation based on angle from mouse position
-    float angle = atan(uv.y - mousePos.y, uv.x - mousePos.x);
+    // Add variation based on angle from center
+    float angle = atan(uv.y, uv.x);
     mask *= 1.0 + 0.2 * sin(angle * 8.0 + iTime);
     
     return mask;
@@ -79,44 +79,33 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec2 uv = (fragCoord - 0.5 * iResolution.xy) / iResolution.y;
     float t = iTime * 0.05;
     
-    // Convert mouse position to same coordinate space as UV
-    vec2 mousePos = (iMouse.xy - 0.5 * iResolution.xy) / iResolution.y;
+    // Rotate UV around center
+    vec2 rotatedUv = uv * rot2d(t * 0.2);
     
-    // If mouse hasn't been clicked yet, use center
-    if (iMouse.x == 0.0 && iMouse.y == 0.0) {
-        mousePos = vec2(0.0);
-    }
-    
-    // Rotate UV around mouse position
-    vec2 offsetUv = uv - mousePos;
-    offsetUv *= rot2d(t * 0.2);
-    uv = mousePos + offsetUv;
-    
-    // Get star field intensity based on distance from mouse
-    float starFieldMask = getStarFieldMask(uv, mousePos);
+    // Get star field intensity based on distance from center
+    float starFieldMask = getStarFieldMask(uv);
     
     vec3 col = vec3(0.0);
-    vec2 baseUV = uv - mousePos; // Make effects relative to mouse position
     
-    // Create layered star effect emanating from mouse position
+    // Create layered star effect emanating from center
     for(float i = 0.0; i < 1.0; i += 1.0/NUM_LAYERS) {
         float depth = fract(i + t);
         float scale = mix(30.0, 0.5, depth);
         float fade = depth * smoothstep(1.0, 0.9, depth);
         
-        // Move stars outward from mouse position
-        vec2 layerUV = baseUV * scale;
-        layerUV += normalize(baseUV) * t * 5.0;
+        // Move stars outward from center
+        vec2 layerUV = rotatedUv * scale;
+        layerUV += normalize(uv) * t * 5.0;
         
         col += StarLayer(layerUV + i * 453.2, starFieldMask) * fade;
     }
     
-    // Add glow at mouse position
-    float mouseGlow = exp(-length(baseUV) * 2.0) * 0.2;
-    col += vec3(0.6, 0.3, 1.0) * mouseGlow;
+    // Add central glow
+    float centerGlow = exp(-length(uv) * 2.0) * 0.2;
+    col += vec3(0.6, 0.3, 1.0) * centerGlow;
     
-    // Use distance from mouse for alpha
-    float alpha = smoothstep(2.0, 0.0, length(baseUV));
+    // Use distance from center for alpha
+    float alpha = smoothstep(2.0, 0.0, length(uv));
     fragColor = vec4(col, alpha);
 }
 
