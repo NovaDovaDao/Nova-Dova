@@ -97,8 +97,8 @@ const ComingSoon = () => {
           {/* Description */}
           <p className="text-xl md:text-2xl text-gray-300 mb-12 max-w-2xl mx-auto 
                      leading-relaxed tracking-wide">
-            We're crafting something extraordinary. The next evolution of AI agents 
-            is about to be unleashed.
+            We are building the next evolution of AI agents. 
+            Stay tuned for updates and announcements.
           </p>
 
           {/* CA Display */}
