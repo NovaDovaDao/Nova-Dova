@@ -8,6 +8,11 @@ import { RootLayout } from "./components/layout/RootLayout";
 import Portal from "./components/ui/Portal";
 import { LoadingTransition } from "./components/effects/LoadingTransition";
 import { useState, useEffect } from "react";
+import { toSolanaWalletConnectors } from "@privy-io/react-auth/solana";
+
+const solanaConnectors = toSolanaWalletConnectors({
+  shouldAutoConnect: false,
+});
 
 function App() {
   const [initialLoading, setInitialLoading] = useState(true);
@@ -31,6 +36,11 @@ function App() {
           },
           embeddedWallets: {
             createOnLogin: "users-without-wallets",
+          },
+          externalWallets: {
+            solana: {
+              connectors: solanaConnectors,
+            },
           },
         }}
       >

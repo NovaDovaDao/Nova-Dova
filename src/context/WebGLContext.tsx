@@ -1,6 +1,6 @@
 // src/context/WebGLContext.tsx
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import * as THREE from 'three';
+import React, { createContext, useContext, useEffect, useState } from "react";
+import * as THREE from "three";
 
 interface WebGLContextType {
   renderer: THREE.WebGLRenderer | null;
@@ -13,15 +13,20 @@ interface WebGLContextType {
 
 const WebGLContext = createContext<WebGLContextType | null>(null);
 
-export const WebGLProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const WebGLProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [renderer, setRenderer] = useState<THREE.WebGLRenderer | null>(null);
   const [scene] = useState(() => new THREE.Scene());
   const [camera] = useState(() => {
     const aspectRatio = window.innerWidth / window.innerHeight;
     return new THREE.OrthographicCamera(
-      -aspectRatio, aspectRatio,
-      1, -1,
-      0.1, 100
+      -aspectRatio,
+      aspectRatio,
+      1,
+      -1,
+      0.1,
+      100
     );
   });
 
@@ -49,10 +54,10 @@ export const WebGLProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       newRenderer.setSize(window.innerWidth, window.innerHeight);
     };
 
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
 
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
       newRenderer.dispose();
     };
   }, [camera]);
@@ -72,14 +77,14 @@ export const WebGLProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   return (
-    <WebGLContext.Provider 
-      value={{ 
-        renderer, 
-        scene, 
+    <WebGLContext.Provider
+      value={{
+        renderer,
+        scene,
         camera,
-        setSize, 
-        addToScene, 
-        removeFromScene 
+        setSize,
+        addToScene,
+        removeFromScene,
       }}
     >
       {children}
@@ -90,7 +95,7 @@ export const WebGLProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 export const useWebGLContext = () => {
   const context = useContext(WebGLContext);
   if (!context) {
-    throw new Error('useWebGLContext must be used within a WebGLProvider');
+    throw new Error("useWebGLContext must be used within a WebGLProvider");
   }
   return context;
 };

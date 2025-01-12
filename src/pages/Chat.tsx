@@ -1,7 +1,7 @@
 // src/pages/Chat.tsx
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from "react-router-dom";
 import { usePrivy } from "@privy-io/react-auth";
-import { ChatWindow } from '../components/chat/ChatWindow';
+import { ChatWindow } from "../components/chat/ChatWindow";
 
 export default function Chat() {
   const { agentId } = useParams();
@@ -9,11 +9,11 @@ export default function Chat() {
   const { logout } = usePrivy();
 
   const handleDashboard = () => {
-    navigate('/dashboard');
+    navigate("/dashboard");
   };
 
   const handleCreateAgent = () => {
-    navigate('/agent-builder');
+    navigate("/agent-builder");
   };
 
   return (
@@ -32,25 +32,29 @@ export default function Chat() {
             </div>
             <div className="flex gap-4">
               {/* Dashboard Button */}
-              <button 
+              <button
                 onClick={handleDashboard}
                 className="chat-btn group relative items-center px-4 sm:px-6 py-2 sm:py-3 overflow-hidden rounded-lg bg-gradient-to-r from-space-purple to-space-blue transition-all duration-300 ease-out hover:scale-[1.02]"
               >
                 <div className="absolute inset-0 w-full h-full transition-all duration-300 ease-out opacity-0 group-hover:opacity-20 bg-[radial-gradient(circle_at_center,_white_0%,_transparent_100%)]"></div>
-                <span className="relative font-medium text-sm sm:text-base text-white">Dashboard</span>
+                <span className="relative font-medium text-sm sm:text-base text-white">
+                  Dashboard
+                </span>
               </button>
 
               {/* Create Agent Button */}
-              <button 
+              <button
                 onClick={handleCreateAgent}
                 className="create-agent-btn group relative items-center px-4 sm:px-6 py-2 sm:py-3 overflow-hidden rounded-lg bg-gradient-to-r from-space-blue to-space-purple transition-all duration-300 ease-out hover:scale-[1.02]"
               >
                 <div className="absolute inset-0 w-full h-full transition-all duration-300 ease-out opacity-0 group-hover:opacity-20 bg-[radial-gradient(circle_at_center,_white_0%,_transparent_100%)]"></div>
-                <span className="relative font-medium text-sm sm:text-base text-white">Create Agent</span>
+                <span className="relative font-medium text-sm sm:text-base text-white">
+                  Create Agent
+                </span>
               </button>
 
               {/* Disconnect Button */}
-              <button 
+              <button
                 onClick={logout}
                 className="wallet-btn flex items-center gap-3 px-4 py-2 bg-gray-800/50 backdrop-blur-sm rounded-xl border border-gray-700 hover:border-purple-500 transition-all duration-300"
               >
@@ -71,7 +75,7 @@ export default function Chat() {
               <ChatWindow
                 agentName={agentId ? `Agent ${agentId}` : "Nova Assistant"}
                 status="inactive"
-                onActivate={() => console.log('Activating agent...')}
+                onActivate={() => console.log("Activating agent...")}
               />
             </div>
 
@@ -84,11 +88,15 @@ export default function Chat() {
                 </h3>
                 <div className="space-y-4">
                   <div>
-                    <h4 className="text-sm font-semibold text-gray-400">Status</h4>
+                    <h4 className="text-sm font-semibold text-gray-400">
+                      Status
+                    </h4>
                     <p className="text-gray-300 mt-1">Ready to initialize</p>
                   </div>
                   <div>
-                    <h4 className="text-sm font-semibold text-gray-400">Models</h4>
+                    <h4 className="text-sm font-semibold text-gray-400">
+                      Models
+                    </h4>
                     <div className="flex flex-wrap gap-2 mt-2">
                       <span className="px-2 py-1 text-xs bg-gray-700 rounded-full text-gray-300">
                         GPT-4
