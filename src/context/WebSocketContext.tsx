@@ -2,10 +2,12 @@
 import React, { useEffect, useState } from "react";
 import { WebSocketContext } from "@/hooks/useWebsocket";
 import { socket } from "@/socket";
+import { usePrivy } from "@privy-io/react-auth";
 
 export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
+  const [balance, setBalance] = useState("0");
   const [connected, setConnected] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -39,11 +41,16 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
       console.log("Received response:", response);
     };
 
+    const onBalance = (value: string) => {
+      setBalance(value);
+    };
+
     socket.on("connect", onConnect);
     socket.on("connect_error", onConnectError);
     socket.on("disconnect", onDisconnect);
 
     socket.on("error", onError);
+    socket.on("balance", onBalance);
     socket.on("response", onResponse);
 
     return () => {
@@ -52,18 +59,20 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
       socket.off("disconnect", onDisconnect);
 
       socket.off("error", onError);
+      socket.off("balance", onBalance);
       socket.off("response", onResponse);
     };
   }, []);
 
+  const { authenticated } = usePrivy();
   useEffect(() => {
     // no-op if the socket is already connected
-    socket.connect();
+    if (authenticated) socket.connect();
 
     return () => {
       socket.disconnect();
     };
-  }, []);
+  }, [authenticated]);
 
   const sendMessage = (message: string) => {
     if (!socket) {
@@ -91,6 +100,7 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
         connected,
         error,
         sendMessage,
+        balance,
       }}
     >
       {children}

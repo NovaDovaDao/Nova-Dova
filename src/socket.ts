@@ -8,4 +8,6 @@ export const socket = io(VITE_WEBSOCKET_URL, {
   auth: (cb) => {
     cb({ token: localStorage["privy:token"]?.replace(/['"]+/g, "") });
   },
+  autoConnect: false,
+  reconnectionAttempts: 5,
 });

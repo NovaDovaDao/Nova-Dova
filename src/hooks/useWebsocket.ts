@@ -6,6 +6,7 @@ interface WebSocketContextType {
   connected: boolean;
   error: string | null;
   sendMessage: (message: string) => void;
+  balance: string;
 }
 
 export const WebSocketContext = createContext<WebSocketContextType | null>(

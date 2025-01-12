@@ -1,7 +1,8 @@
 // src/components/chat/ChatWindow.tsx
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { Button } from "../ui/Button";
 import { useWebSocket } from "@/hooks/useWebsocket";
+import { formatTokens } from "@/utils/numbers";
 
 interface Message {
   id: string;
@@ -23,7 +24,8 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
   status,
   onActivate,
 }) => {
-  const tokenBalance = 9999999;
+  const { balance } = useWebSocket();
+  const tokenBalance = useMemo(() => formatTokens(balance), [balance]);
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -167,7 +169,9 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
                   {error ? (
                     <span className="text-red-400">{error}</span>
                   ) : (
-                    "Connect your Solana wallet with 100000 $DOVA tokens to start chatting."
+                    `Connect your Solana wallet with ${formatTokens(
+                      "100000"
+                    )} $DOVA tokens to start chatting.`
                   )}
                 </p>
                 {tokenBalance && (
