@@ -60,7 +60,7 @@ export default function Dashboard() {
                 className="chat-btn group relative items-center px-4 sm:px-6 py-2 sm:py-3 overflow-hidden rounded-lg bg-gradient-to-r from-space-purple to-space-blue transition-all duration-300 ease-out hover:scale-[1.02]"
               >
                 <div className="absolute inset-0 w-full h-full transition-all duration-300 ease-out opacity-0 group-hover:opacity-20 bg-[radial-gradient(circle_at_center,_white_0%,_transparent_100%)]"></div>
-                <span className="relative font-medium text-sm sm:text-base text-white">Open Chat</span>
+                <span className="relative font-medium text-sm sm:text-base text-white">Agent Chat</span>
               </button>
 
               {/* Create Agent Button */}

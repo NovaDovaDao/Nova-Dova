@@ -12,9 +12,9 @@ export default function Chat() {
     navigate("/dashboard");
   };
 
-  const handleCreateAgent = () => {
-    navigate("/agent-builder");
-  };
+  // const handleCreateAgent = () => {
+  //   navigate("/agent-builder");
+  // };
 
   return (
     <div className="min-h-screen">
@@ -43,7 +43,7 @@ export default function Chat() {
               </button>
 
               {/* Create Agent Button */}
-              <button
+              {/* <button
                 onClick={handleCreateAgent}
                 className="create-agent-btn group relative items-center px-4 sm:px-6 py-2 sm:py-3 overflow-hidden rounded-lg bg-gradient-to-r from-space-blue to-space-purple transition-all duration-300 ease-out hover:scale-[1.02]"
               >
@@ -51,7 +51,7 @@ export default function Chat() {
                 <span className="relative font-medium text-sm sm:text-base text-white">
                   Create Agent
                 </span>
-              </button>
+              </button> */}
 
               {/* Disconnect Button */}
               <button
@@ -81,42 +81,15 @@ export default function Chat() {
 
             {/* Info Panel - Similar to Dashboard cards */}
             <div className="space-y-6">
-              {/* Agent Info Card */}
-              <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 border border-gray-700">
-                <h3 className="text-xl font-semibold bg-gradient-to-r from-space-blue to-space-purple bg-clip-text text-transparent mb-4">
-                  Agent Details
-                </h3>
-                <div className="space-y-4">
-                  <div>
-                    <h4 className="text-sm font-semibold text-gray-400">
-                      Status
-                    </h4>
-                    <p className="text-gray-300 mt-1">Ready to initialize</p>
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-semibold text-gray-400">
-                      Models
-                    </h4>
-                    <div className="flex flex-wrap gap-2 mt-2">
-                      <span className="px-2 py-1 text-xs bg-gray-700 rounded-full text-gray-300">
-                        OpenAI
-                      </span>
-                      <span className="px-2 py-1 text-xs bg-gray-700 rounded-full text-gray-300">
-                        Claude
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
 
-              {/* Chat History Card */}
+              {/* Recent Agent Info Card */}
               <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 border border-gray-700">
                 <h3 className="text-xl font-semibold bg-gradient-to-r from-space-blue to-space-purple bg-clip-text text-transparent mb-4">
-                  Recent Chats
+                   Recent Agents
                 </h3>
                 <div className="space-y-3">
                   <div className="text-gray-400 text-sm">
-                    No recent conversations
+                    No recent Agents
                   </div>
                 </div>
               </div>
