@@ -3,7 +3,7 @@ import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { usePrivy } from "@privy-io/react-auth";
 import { useTransition } from "../../context/TransitionContext";
 import Dashboard from "../../pages/Dashboard";
-import Welcome from "../../pages/Welcome";
+// import Welcome from "../../pages/Welcome";
 import Chat from "../../pages/Chat";
 import AgentBuilder from "../../pages/AgentBuilder";
 import ComingSoon from "../../pages/ComingSoon";
@@ -38,8 +38,8 @@ export default function Portal() {
     <Routes>
       <Route 
         path="/"
-        // element={authenticated ? <Navigate to="/coming-soon" replace /> : <Welcome />}
-        element={authenticated ? <Navigate to="/dashboard" replace /> : <Welcome />}
+        element={authenticated ? <Navigate to="/coming-soon" replace /> : <ComingSoon />}
+        // element={authenticated ? <Navigate to="/dashboard" replace /> : <Welcome />}
       />
       <Route
         path="/coming-soon"
