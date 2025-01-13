@@ -28,9 +28,9 @@ export default function Dashboard() {
   const { logout } = usePrivy();
   const navigate = useNavigate();
 
-  const handleCreateAgent = () => {
-    navigate('/agent-builder');
-  };
+  // const handleCreateAgent = () => {
+  //   navigate('/agent-builder');
+  // };
 
   const handleOpenChat = () => {
     navigate('/chat');
@@ -64,13 +64,13 @@ export default function Dashboard() {
               </button>
 
               {/* Create Agent Button */}
-              <button 
+              {/* <button 
                 onClick={handleCreateAgent}
                 className="create-agent-btn group relative items-center px-4 sm:px-6 py-2 sm:py-3 overflow-hidden rounded-lg bg-gradient-to-r from-space-blue to-space-purple transition-all duration-300 ease-out hover:scale-[1.02]"
               >
                 <div className="absolute inset-0 w-full h-full transition-all duration-300 ease-out opacity-0 group-hover:opacity-20 bg-[radial-gradient(circle_at_center,_white_0%,_transparent_100%)]"></div>
                 <span className="relative font-medium text-sm sm:text-base text-white">Create Agent</span>
-              </button>
+              </button> */}
 
               {/* Disconnect Button */}
               <button 

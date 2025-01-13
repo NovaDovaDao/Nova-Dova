@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef, useMemo } from "react";
 import { Button } from "../ui/Button";
 import { useWebSocket } from "@/hooks/useWebsocket";
 import { formatTokens } from "@/utils/numbers";
+import { QuickActions } from "./QuickActions";
 
 interface Message {
   id: string;
@@ -24,13 +25,13 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
   status,
   onActivate,
 }) => {
-  const { balance } = useWebSocket();
+  const { balance, connected, sendMessage, error } = useWebSocket();
   const tokenBalance = useMemo(() => formatTokens(balance), [balance]);
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const { connected, sendMessage, error } = useWebSocket();
 
+  // Scroll to bottom when new messages arrive
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -39,8 +40,9 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
     scrollToBottom();
   }, [messages]);
 
-  const handleSendMessage = (e: React.FormEvent) => {
-    e.preventDefault();
+  // Handle message submission
+  const handleSendMessage = (e?: React.FormEvent) => {
+    e?.preventDefault();
     if (!inputValue.trim()) return;
 
     const newMessage: Message = {
@@ -55,6 +57,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
     setInputValue("");
   };
 
+  // Render individual message
   const renderMessage = (message: Message) => (
     <div
       key={message.id}
@@ -67,15 +70,36 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
           message.type === "user"
             ? "bg-space-purple/20 text-white"
             : "bg-gray-800/50 text-gray-200"
-        }`}
+        } shadow-lg backdrop-blur-sm border border-gray-700/50`}
       >
         <p className="text-sm">{message.content}</p>
-        <span className="text-xs text-gray-400 mt-1">
+        <span className="text-xs text-gray-400 mt-1 block">
           {new Date(message.timestamp).toLocaleTimeString()}
         </span>
       </div>
     </div>
   );
+
+  // Render connection status badge
+  const renderStatusBadge = () => {
+    const statusColors = {
+      connected: "bg-green-500",
+      loading: "bg-yellow-500",
+      disconnected: "bg-gray-500",
+    };
+
+    const currentStatus = connected
+      ? "connected"
+      : status === "loading"
+      ? "loading"
+      : "disconnected";
+
+    return (
+      <span
+        className={`absolute bottom-0 right-0 w-3 h-3 rounded-full ${statusColors[currentStatus]} border-2 border-gray-800`}
+      />
+    );
+  };
 
   return (
     <div className="flex flex-col h-[calc(100vh-12rem)] bg-gray-800/30 backdrop-blur-md rounded-xl border border-gray-700 overflow-hidden transition-all duration-300 hover:border-purple-500/50">
@@ -100,15 +124,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
                 </span>
               )}
             </div>
-            <span
-              className={`absolute bottom-0 right-0 w-3 h-3 rounded-full ${
-                connected
-                  ? "bg-green-500"
-                  : status === "loading"
-                  ? "bg-yellow-500"
-                  : "bg-gray-500"
-              } border-2 border-gray-800`}
-            ></span>
+            {renderStatusBadge()}
           </div>
           <div>
             <h3 className="text-lg font-semibold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
@@ -134,7 +150,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
       </div>
 
       {/* Chat Messages */}
-      <div className="flex-1 overflow-y-auto p-6">
+      <div className="flex-1 overflow-y-auto p-6 space-y-4">
         {messages.length > 0 ? (
           <>
             {messages.map(renderMessage)}
@@ -195,46 +211,59 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
         )}
       </div>
 
-      {/* Chat Input */}
-      <form
-        onSubmit={handleSendMessage}
-        className="p-4 bg-gray-800/50 border-t border-gray-700"
-      >
-        <div className="relative">
-          <input
-            type="text"
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            disabled={!connected}
-            placeholder={
-              connected
-                ? "Type your message..."
-                : "Connect to start chatting..."
-            }
-            className="w-full bg-gray-900/50 text-gray-300 rounded-xl px-4 py-3 pl-4 pr-12 border border-gray-700 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-          />
-          <button
-            type="submit"
-            disabled={!connected || !inputValue.trim()}
-            className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-lg bg-gradient-to-r from-space-blue to-space-purple text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 hover:opacity-90"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="w-5 h-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+      {/* Chat Input & Quick Actions */}
+      <div className="border-t border-gray-700">
+        {/* Quick Actions */}
+        <QuickActions
+          onActionSelect={(message) => {
+            setInputValue(message);
+            handleSendMessage();
+          }}
+          disabled={!connected}
+        />
+        <form onSubmit={handleSendMessage} className="p-4 bg-gray-800/50">
+          <div className="relative">
+            <input
+              type="text"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              disabled={!connected}
+              placeholder={
+                connected
+                  ? "Type your message..."
+                  : "Connect to start chatting..."
+              }
+              className="w-full bg-gray-900/50 text-gray-300 rounded-xl px-4 py-3 pl-4 pr-12 
+                       border border-gray-700 focus:border-purple-500 focus:ring-1 
+                       focus:ring-purple-500 transition-all duration-300 
+                       disabled:opacity-50 disabled:cursor-not-allowed"
+            />
+            <button
+              type="submit"
+              disabled={!connected || !inputValue.trim()}
+              className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-lg 
+                       bg-gradient-to-r from-space-blue to-space-purple text-white 
+                       disabled:opacity-50 disabled:cursor-not-allowed 
+                       transition-all duration-300 hover:opacity-90"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M14 5l7 7m0 0l-7 7m7-7H3"
-              />
-            </svg>
-          </button>
-        </div>
-      </form>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-5 h-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M14 5l7 7m0 0l-7 7m7-7H3"
+                />
+              </svg>
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };
