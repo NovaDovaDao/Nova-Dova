@@ -38,7 +38,7 @@ export default function Portal() {
     <Routes>
       <Route 
         path="/" 
-        element={authenticated ? <Navigate to="/dashboard" replace /> : <Welcome />} 
+        element={authenticated ? <Navigate to="/chat" replace /> : <Welcome />} 
       />
       <Route
         path="/dashboard"
