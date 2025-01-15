@@ -9,10 +9,13 @@ import Portal from "./components/ui/Portal";
 import { LoadingTransition } from "./components/effects/LoadingTransition";
 import { useState, useEffect } from "react";
 import { toSolanaWalletConnectors } from "@privy-io/react-auth/solana";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const solanaConnectors = toSolanaWalletConnectors({
   shouldAutoConnect: false,
 });
+
+const queryClient = new QueryClient();
 
 function App() {
   const [initialLoading, setInitialLoading] = useState(true);
@@ -26,36 +29,38 @@ function App() {
   }, []);
 
   return (
-    <BrowserRouter>
-      <PrivyProvider
-        appId={import.meta.env.VITE_PRIVY_APP_ID}
-        config={{
-          appearance: {
-            theme: "dark",
-            accentColor: "#676FFF",
-          },
-          embeddedWallets: {
-            createOnLogin: "users-without-wallets",
-          },
-          externalWallets: {
-            solana: {
-              connectors: solanaConnectors,
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <PrivyProvider
+          appId={import.meta.env.VITE_PRIVY_APP_ID}
+          config={{
+            appearance: {
+              theme: "dark",
+              accentColor: "#676FFF",
             },
-          },
-        }}
-      >
-        <WebSocketProvider>
-          <WebGLProvider>
-            <TransitionProvider>
-              <RootLayout>
-                <LoadingTransition initialLoading={initialLoading} />
-                <Portal />
-              </RootLayout>
-            </TransitionProvider>
-          </WebGLProvider>
-        </WebSocketProvider>
-      </PrivyProvider>
-    </BrowserRouter>
+            embeddedWallets: {
+              createOnLogin: "users-without-wallets",
+            },
+            externalWallets: {
+              solana: {
+                connectors: solanaConnectors,
+              },
+            },
+          }}
+        >
+          <WebSocketProvider>
+            <WebGLProvider>
+              <TransitionProvider>
+                <RootLayout>
+                  <LoadingTransition initialLoading={initialLoading} />
+                  <Portal />
+                </RootLayout>
+              </TransitionProvider>
+            </WebGLProvider>
+          </WebSocketProvider>
+        </PrivyProvider>
+      </BrowserRouter>
+    </QueryClientProvider>
   );
 }
 

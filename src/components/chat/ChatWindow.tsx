@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef, useMemo } from "react";
 import { Button } from "../ui/Button";
 import { useWebSocket } from "@/hooks/useWebsocket";
 import { formatTokens } from "@/utils/numbers";
+import { useGetChat } from "@/hooks/useGetChat";
 
 interface Message {
   id: string;
@@ -26,10 +27,11 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
 }) => {
   const { balance } = useWebSocket();
   const tokenBalance = useMemo(() => formatTokens(balance), [balance]);
+  const { messages: history } = useGetChat();
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const { connected, sendMessage, error } = useWebSocket();
+  const { connected, error, sendMessage } = useWebSocket();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -133,6 +135,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
         </div>
       </div>
 
+      {history.length}
       {/* Chat Messages */}
       <div className="flex-1 overflow-y-auto p-6">
         {messages.length > 0 ? (
