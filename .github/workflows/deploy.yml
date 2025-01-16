@@ -32,6 +32,10 @@ jobs:
         run: "npm install"
 
       - name: Build step
+        env: 
+            VITE_PRIVY_APP_ID: ${{ secrets.VITE_PRIVY_APP_ID }}
+            VITE_WEBSOCKET_URL: ${{ secrets.VITE_WEBSOCKET_URL }}
+            VITE_REST_API_URL: ${{ secrets.VITE_REST_API_URL }}
         run: "npm run build"
 
       - name: Upload to Deno Deploy
