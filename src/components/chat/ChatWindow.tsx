@@ -1,5 +1,5 @@
 // src/components/chat/ChatWindow.tsx
-import React, { useState, useEffect, useRef, useMemo, useLayoutEffect } from "react";
+import React, { useState, useRef, useMemo, useLayoutEffect } from "react";
 import { Button } from "../ui/Button";
 import { useWebSocket } from "@/hooks/useWebsocket";
 import { formatTokens } from "@/utils/numbers";
