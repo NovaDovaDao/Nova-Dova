@@ -95,19 +95,6 @@ export default function Chat() {
                     </h4>
                     <p className="text-gray-300 mt-1">Ready to initialize</p>
                   </div>
-                  <div>
-                    <h4 className="text-sm font-semibold text-gray-400">
-                      Models
-                    </h4>
-                    <div className="flex flex-wrap gap-2 mt-2">
-                      <span className="px-2 py-1 text-xs bg-gray-700 rounded-full text-gray-300">
-                        GPT-4
-                      </span>
-                      <span className="px-2 py-1 text-xs bg-gray-700 rounded-full text-gray-300">
-                        Claude
-                      </span>
-                    </div>
-                  </div>
                 </div>
               </div>
 
