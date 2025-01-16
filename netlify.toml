@@ -1,9 +1,0 @@
-# Other netlify settings…
-
-[[edge_functions]]
-function = "get-chat"
-path = "/api/get-chat"
-
-[[edge_functions]]
-function = "n8n-response"
-path = "/api/n8n-response"
