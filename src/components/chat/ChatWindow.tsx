@@ -1,11 +1,11 @@
 // src/components/chat/ChatWindow.tsx
-import React, { useState, useEffect, useRef, useMemo } from "react";
+import React, { useState, useEffect, useRef, useMemo, useLayoutEffect } from "react";
 import { Button } from "../ui/Button";
 import { useWebSocket } from "@/hooks/useWebsocket";
 import { formatTokens } from "@/utils/numbers";
 import { Message, useGetChat } from "@/hooks/useGetChat";
 
-interface ChatWindowProps {
+export interface ChatWindowProps {
   agentName: string;
   agentAvatar?: string;
   status: "active" | "inactive" | "loading";
@@ -24,6 +24,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
   const { connected, error, sendMessage } = useWebSocket();
 
   const chatLog = useMemo(() => {
@@ -35,15 +36,18 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
   }, [history, messages]);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     scrollToBottom();
   }, [messages]);
 
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     if (!inputValue.trim()) return;
 
     const newMessage: Message = {
@@ -57,6 +61,10 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
     setMessages((prev) => [...prev, newMessage]);
     sendMessage(inputValue);
     setInputValue("");
+    
+    requestAnimationFrame(() => {
+      scrollToBottom();
+    });
   };
 
   const renderMessage = (message: Message) => (
@@ -82,7 +90,16 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
   );
 
   return (
-    <div className="flex flex-col h-[calc(100vh-12rem)] bg-gray-800/30 backdrop-blur-md rounded-xl border border-gray-700 overflow-hidden transition-all duration-300 hover:border-purple-500/50">
+    <div className="flex flex-col h-[calc(100vh-var(--chat-padding)*2)] max-h-[calc(100vh-var(--chat-padding)*2)] bg-gray-800/30 backdrop-blur-md rounded-xl border border-gray-700 overflow-hidden transition-all duration-300 hover:border-purple-500/50">
+      <style>
+        {`
+          :root {
+            --chat-header-height: 4rem;
+            --chat-input-height: 4.5rem;
+            --chat-padding: 2rem;
+          }
+        `}
+      </style>
       {/* Chat Header */}
       <div className="flex items-center justify-between px-6 py-4 bg-gray-800/50 border-b border-gray-700">
         <div className="flex items-center space-x-4">
@@ -139,7 +156,11 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
 
       {chatLog.length}
       {/* Chat Messages */}
-      <div className="flex-1 overflow-y-auto p-6">
+      <div 
+        ref={chatContainerRef}
+        className="flex-1 overflow-y-auto p-6 scroll-smooth overscroll-contain"
+        style={{ overscrollBehavior: 'contain' }}
+      >
         {chatLog.length > 0 ? (
           <>
             {chatLog.map(renderMessage)}
@@ -244,4 +265,3 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
   );
 };
 
-export default ChatWindow;
