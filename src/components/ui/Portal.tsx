@@ -7,6 +7,7 @@ import Dashboard from "../../pages/Dashboard";
 import Welcome from "../../pages/Welcome";
 import Chat from "../../pages/Chat";
 import AgentBuilder from "../../pages/AgentBuilder";
+import ComingSoon from "../../pages/ComingSoon";
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const { authenticated } = usePrivy();
@@ -61,6 +62,14 @@ export default function Portal() {
         element={
           <PrivateRoute>
             <Chat />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/coming-soon"
+        element={
+          <PrivateRoute>
+            <ComingSoon />
           </PrivateRoute>
         }
       />

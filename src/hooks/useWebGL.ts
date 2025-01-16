@@ -11,25 +11,29 @@ export const useWebGL = (containerRef: React.RefObject<HTMLElement>, options: We
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
   const sceneRef = useRef<THREE.Scene | null>(null);
   const materialRef = useRef<THREE.ShaderMaterial | null>(null);
+  const frameRef = useRef<number>(0);
+  const startTimeRef = useRef<number>(performance.now());
 
   useEffect(() => {
     if (!containerRef.current) return;
 
-    // Setup renderer
+    // Setup renderer with performance optimizations
     const renderer = new THREE.WebGLRenderer({
       antialias: true,
       alpha: true,
-      premultipliedAlpha: false,
+      powerPreference: "high-performance",
       stencil: false,
       depth: false
     });
+    
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.autoClear = false;
 
     // Setup scene and camera
     const scene = new THREE.Scene();
-    const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 100);
-    camera.position.z = 1;
+    const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
 
-    // Create geometry and material
+    // Create geometry and material with optimizations
     const geometry = new THREE.PlaneGeometry(2, 2);
     const material = new THREE.ShaderMaterial({
       fragmentShader: options.fragmentShader,
@@ -41,18 +45,34 @@ export const useWebGL = (containerRef: React.RefObject<HTMLElement>, options: We
       uniforms: {
         iTime: { value: 0 },
         iResolution: { value: new THREE.Vector3() },
-        iMouse: { value: new THREE.Vector2() },
+        iMouse: { value: new THREE.Vector4() },
         ...options.uniforms
       },
-      transparent: true
+      transparent: true,
+      depthWrite: false,
+      depthTest: false
     });
 
     const mesh = new THREE.Mesh(geometry, material);
     scene.add(mesh);
 
     // Initial setup
+    const handleResize = () => {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      const pixelRatio = Math.min(window.devicePixelRatio, 2);
+      
+      renderer.setSize(width, height);
+      if (material.uniforms.iResolution) {
+        material.uniforms.iResolution.value.set(
+          width * pixelRatio,
+          height * pixelRatio,
+          1
+        );
+      }
+    };
+
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     containerRef.current.appendChild(renderer.domElement);
 
     // Store refs
@@ -60,50 +80,53 @@ export const useWebGL = (containerRef: React.RefObject<HTMLElement>, options: We
     sceneRef.current = scene;
     materialRef.current = material;
 
-    // Animation
-    let animationFrameId: number;
-    let time = 0;
-
+    // Animation with optimized timing
     const animate = () => {
-      time += 0.01;
+      const currentTime = performance.now();
+      const elapsedTime = (currentTime - startTimeRef.current) / 1000;
+      
       if (material.uniforms.iTime) {
-        material.uniforms.iTime.value = time;
+        material.uniforms.iTime.value = elapsedTime;
       }
-      if (material.uniforms.iResolution) {
-        material.uniforms.iResolution.value.set(
-          window.innerWidth * window.devicePixelRatio,
-          window.innerHeight * window.devicePixelRatio,
-          1
-        );
-      }
+
       renderer.render(scene, camera);
-      animationFrameId = requestAnimationFrame(animate);
+      frameRef.current = requestAnimationFrame(animate);
     };
 
-    // Start animation
-    animate();
-
-    // Handle resize
-    const handleResize = () => {
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      if (material.uniforms.iResolution) {
-        material.uniforms.iResolution.value.set(
-          window.innerWidth * window.devicePixelRatio,
-          window.innerHeight * window.devicePixelRatio,
-          1
-        );
+    // Handle mouse movement efficiently
+    const handleMouseMove = (event: MouseEvent) => {
+      if (material.uniforms.iMouse) {
+        const mouseX = event.clientX * window.devicePixelRatio;
+        const mouseY = event.clientY * window.devicePixelRatio;
+        material.uniforms.iMouse.value.set(mouseX, mouseY, 0, 0);
       }
     };
 
-    window.addEventListener('resize', handleResize);
+    // Throttle resize events
+    let resizeTimeout: number;
+    const throttledResize = () => {
+      if (resizeTimeout) {
+        window.cancelAnimationFrame(resizeTimeout);
+      }
+      resizeTimeout = window.requestAnimationFrame(handleResize);
+    };
+
+    handleResize();
+    window.addEventListener('resize', throttledResize);
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    frameRef.current = requestAnimationFrame(animate);
 
     // Cleanup
     return () => {
-      window.removeEventListener('resize', handleResize);
-      cancelAnimationFrame(animationFrameId);
+      window.removeEventListener('resize', throttledResize);
+      window.removeEventListener('mousemove', handleMouseMove);
+      cancelAnimationFrame(frameRef.current);
+      cancelAnimationFrame(resizeTimeout);
+      
       geometry.dispose();
       material.dispose();
       renderer.dispose();
+      
       if (containerRef.current?.contains(renderer.domElement)) {
         containerRef.current.removeChild(renderer.domElement);
       }
