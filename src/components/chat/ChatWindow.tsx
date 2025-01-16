@@ -145,7 +145,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
               </p>
               {tokenBalance && connected && (
                 <p className="text-sm text-emerald-400">
-                  Balance: {tokenBalance} DOVA
+                  $DOVA holder
                 </p>
               )}
               {error && <p className="text-sm text-red-400">{error}</p>}
