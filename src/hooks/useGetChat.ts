@@ -8,12 +8,15 @@ export const useGetChat = () => {
     queryKey: ["chat", "general"],
     queryFn: async () => {
       const token = await getAccessToken();
-      const res = await fetch("api/get-chat", {
-        // TODO: create api alias
-        headers: {
-          "x-ghost-token": token ?? "",
-        },
-      });
+      const res = await fetch(
+        new URL("/get-chat", import.meta.env.VITE_REST_API_URL),
+        {
+          // TODO: create api alias
+          headers: {
+            "x-ghost-token": token ?? "",
+          },
+        }
+      );
       return res.json();
     },
     enabled: authenticated,
