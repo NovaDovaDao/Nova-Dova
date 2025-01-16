@@ -196,7 +196,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
                     <span className="text-red-400">{error}</span>
                   ) : (
                     `Connect your Solana wallet with ${formatTokens(
-                      "100000"
+                      "1000"
                     )} $DOVA tokens to start chatting.`
                   )}
                 </p>
