@@ -37,10 +37,6 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
       setError(error);
     };
 
-    const onResponse = (response: string) => {
-      console.log("Received response:", response);
-    };
-
     const onBalance = (value: string) => {
       setBalance(value);
     };
@@ -51,7 +47,6 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
 
     socket.on("error", onError);
     socket.on("balance", onBalance);
-    socket.on("response", onResponse);
 
     return () => {
       socket.off("connect", onConnect);
@@ -60,7 +55,6 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
 
       socket.off("error", onError);
       socket.off("balance", onBalance);
-      socket.off("response", onResponse);
     };
   }, []);
 

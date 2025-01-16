@@ -3,14 +3,7 @@ import React, { useState, useEffect, useRef, useMemo } from "react";
 import { Button } from "../ui/Button";
 import { useWebSocket } from "@/hooks/useWebsocket";
 import { formatTokens } from "@/utils/numbers";
-import { useGetChat } from "@/hooks/useGetChat";
-
-interface Message {
-  id: string;
-  content: string;
-  timestamp: Date;
-  type: "system" | "agent" | "user";
-}
+import { Message, useGetChat } from "@/hooks/useGetChat";
 
 interface ChatWindowProps {
   agentName: string;
@@ -33,6 +26,14 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { connected, error, sendMessage } = useWebSocket();
 
+  const chatLog = useMemo(() => {
+    return history
+      .concat(messages)
+      .sort((a, b) =>
+        new Date(a.created_at) > new Date(b.created_at) ? 1 : -1
+      );
+  }, [history, messages]);
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -46,10 +47,11 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
     if (!inputValue.trim()) return;
 
     const newMessage: Message = {
-      id: Date.now().toString(),
+      id: Date.now(),
       content: inputValue,
-      timestamp: new Date(),
-      type: "user",
+      created_at: new Date().toISOString(),
+      sender: "user",
+      userId: "foo",
     };
 
     setMessages((prev) => [...prev, newMessage]);
@@ -61,19 +63,19 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
     <div
       key={message.id}
       className={`flex ${
-        message.type === "user" ? "justify-end" : "justify-start"
+        message.sender === "user" ? "justify-end" : "justify-start"
       } mb-4`}
     >
       <div
         className={`max-w-[80%] rounded-xl px-4 py-2 ${
-          message.type === "user"
+          message.sender === "user"
             ? "bg-space-purple/20 text-white"
             : "bg-gray-800/50 text-gray-200"
         }`}
       >
         <p className="text-sm">{message.content}</p>
         <span className="text-xs text-gray-400 mt-1">
-          {new Date(message.timestamp).toLocaleTimeString()}
+          {new Date(message.created_at).toLocaleTimeString()}
         </span>
       </div>
     </div>
@@ -135,12 +137,12 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
         </div>
       </div>
 
-      {history.length}
+      {chatLog.length}
       {/* Chat Messages */}
       <div className="flex-1 overflow-y-auto p-6">
-        {messages.length > 0 ? (
+        {chatLog.length > 0 ? (
           <>
-            {messages.map(renderMessage)}
+            {chatLog.map(renderMessage)}
             <div ref={messagesEndRef} />
           </>
         ) : (
