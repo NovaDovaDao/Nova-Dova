@@ -1,6 +1,5 @@
 import { usePrivy } from "@privy-io/react-auth";
 import Socials from '../components/ui/Socials';
-import { useState } from 'react';
 
 export default function Welcome() {
   const { ready, authenticated, login } = usePrivy();

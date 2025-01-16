@@ -6,21 +6,33 @@ import { useNavigate } from 'react-router-dom';
 const mockAgents = [
   {
     id: '1',
-    name: 'Analysis Agent',
-    description: 'Processes complex datasets to extract meaningful insights',
-    aiModels: ['Ollama']
+    name: 'Marketing Intelligence Agent',
+    description: 'Analyzes customer data to create tailored marketing campaigns for platforms like (X), Reddit, Instagram, Discord and more.',
+    isDisabled: true
   },
   {
     id: '2',
-    name: 'Research Assistant',
-    description: 'Conducts thorough research and synthesizes information',
-    aiModels: ['Anthropic', 'Ollama']
+    name: 'Social Media Management Agent',
+    description: 'Automates content creation, scheduling, and audience interactions across social platforms.',
+    isDisabled: true
   },
   {
     id: '3',
-    name: 'Creative AI',
-    description: 'Generates innovative ideas and creative content',
-    aiModels: ['flux', 'OpenAI']
+    name: 'Blockchain Insights Agent',
+    description: 'Collects and analyzes Solana blockchain data to provide insights on token movements, smart contracts, and financial data to uncover investment opportunities and predict market trends.',
+    isDisabled: true
+  },
+  {
+    id: '4',
+    name: 'Community Engagement Agent',
+    description: 'Facilitates vibrant communities by automating FAQs, onboarding, and discussions on Discord and other platforms.',
+    isDisabled: true
+  },
+  {
+    id: '6',
+    name: 'Governance and Moderation Agent',
+    description: 'Monitors DAOs and community platforms, moderating content and providing insights on governance proposals and community sentiment.',
+    isDisabled: true
   }
 ];
 
@@ -88,7 +100,7 @@ export default function Dashboard() {
       </header>
       
       <main className="p-4 lg:p-8 overflow-auto">
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-6 max-w-[2000px] mx-auto">
           {mockAgents.map((agent) => (
             <AgentCard 
               key={agent.id} 
