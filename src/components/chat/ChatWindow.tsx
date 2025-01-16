@@ -216,7 +216,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
                 </p>
                 {tokenBalance && (
                   <p className="text-emerald-400 text-sm">
-                    Current Balance: {tokenBalance} DOVA
+                    To Chat with Nova connect your wallet with 1,000 $DOVA Current Balance: {tokenBalance} DOVA
                   </p>
                 )}
               </div>
