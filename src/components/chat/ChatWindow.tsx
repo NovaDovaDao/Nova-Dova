@@ -72,17 +72,17 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
       key={message.id}
       className={`flex ${
         message.sender === "user" ? "justify-end" : "justify-start"
-      } mb-4`}
+      } w-full`}
     >
       <div
-        className={`max-w-[80%] rounded-xl px-4 py-2 ${
+        className={`max-w-[85%] sm:max-w-[75%] rounded-xl px-3 py-2 sm:px-4 sm:py-2.5 ${
           message.sender === "user"
-            ? "bg-space-purple/20 text-white"
-            : "bg-gray-800/50 text-gray-200"
+            ? "bg-space-purple/20 text-white ml-auto"
+            : "bg-gray-800/50 text-gray-200 mr-auto"
         }`}
       >
-        <p className="text-sm">{message.content}</p>
-        <span className="text-xs text-gray-400 mt-1">
+        <p className="text-sm sm:text-base break-words">{message.content}</p>
+        <span className="text-[10px] sm:text-xs text-gray-400 mt-1 block">
           {new Date(message.created_at).toLocaleTimeString()}
         </span>
       </div>
@@ -90,13 +90,23 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
   );
 
   return (
-    <div className="flex flex-col h-[calc(100vh-var(--chat-padding)*2)] max-h-[calc(100vh-var(--chat-padding)*2)] bg-gray-800/30 backdrop-blur-md rounded-xl border border-gray-700 overflow-hidden transition-all duration-300 hover:border-purple-500/50">
+    <div className="flex flex-col h-[calc(100dvh-12rem)] md:h-[calc(100dvh-14rem)] lg:h-[calc(100dvh-10rem)] bg-gray-800/30 backdrop-blur-md rounded-xl border border-gray-700 overflow-hidden transition-all duration-300 hover:border-purple-500/50 mx-auto w-full max-w-full my-2 md:my-4">
       <style>
         {`
           :root {
             --chat-header-height: 4rem;
             --chat-input-height: 4.5rem;
-            --chat-padding: 2rem;
+            --chat-total-padding: 2rem;
+            --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+            --viewport-padding: max(0.5rem, env(safe-area-inset-bottom, 0.5rem));
+          }
+          
+          @media (min-width: 768px) {
+            :root {
+              --chat-header-height: 4.5rem;
+              --chat-input-height: 5rem;
+              --chat-total-padding: 2.5rem;
+            }
           }
         `}
       </style>
@@ -158,8 +168,12 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
       {/* Chat Messages */}
       <div 
         ref={chatContainerRef}
-        className="flex-1 overflow-y-auto p-6 scroll-smooth overscroll-contain"
-        style={{ overscrollBehavior: 'contain' }}
+        className="flex-1 overflow-y-auto px-4 md:px-6 py-4 scroll-smooth overscroll-contain space-y-4 min-h-0"
+        style={{ 
+          overscrollBehavior: 'contain',
+          height: `calc(100% - var(--chat-header-height) - var(--chat-input-height))`,
+          maxHeight: `calc(100dvh - var(--chat-header-height) - var(--chat-input-height) - var(--safe-area-bottom) - var(--chat-total-padding) - 3rem)`
+        }}
       >
         {chatLog.length > 0 ? (
           <>
@@ -224,7 +238,10 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
       {/* Chat Input */}
       <form
         onSubmit={handleSendMessage}
-        className="p-4 bg-gray-800/50 border-t border-gray-700"
+        className="p-4 md:p-6 bg-gray-800/50 border-t border-gray-700 mt-auto sticky bottom-0"
+        style={{
+          paddingBottom: 'calc(0.75rem + var(--safe-area-bottom))'
+        }}
       >
         <div className="relative">
           <input

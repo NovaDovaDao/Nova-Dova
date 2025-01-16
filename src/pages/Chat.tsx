@@ -68,12 +68,12 @@ export default function Chat() {
       </header>
 
       {/* Main Content Area */}
-      <main className="p-4 lg:p-8">
+      <main className="p-4 lg:p-8 pb-16 md:pb-20 lg:pb-8">
         <div className="max-w-7xl mx-auto">
           {/* Grid Layout for Chat Window and Info Panel */}
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
             {/* Chat Window - Takes up more space */}
-            <div className="xl:col-span-2">
+            <div className="xl:col-span-2 mb-16 xl:mb-0">
               <ChatWindow
                 agentName={agentId ? `Agent ${agentId}` : "Nova Assistant"}
                 status="inactive"

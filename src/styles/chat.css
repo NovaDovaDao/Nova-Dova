@@ -1,4 +1,55 @@
 /* src/styles/chat.css */
+.chat-container {
+  height: calc(100dvh - var(--chat-total-padding));
+  height: calc(100dvh - env(safe-area-inset-bottom) - var(--chat-total-padding));
+  max-height: calc(-webkit-fill-available - var(--chat-total-padding));
+}
+
+.chat-window-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  max-height: calc(100% - var(--chat-input-height));
+}
+
+/* Add responsive padding adjustments */
+@media (max-height: 667px) {
+  :root {
+    --chat-total-padding: 1.5rem;
+  }
+  
+  .chat-container {
+    height: calc(100dvh - 1.5rem);
+  }
+}
+
+/* Ensure proper spacing on smaller devices */
+@media (max-width: 1026px) {
+  :root {
+    --chat-total-padding: 3rem;
+  }
+  
+  .chat-container {
+    height: calc(100dvh - 12rem);
+  }
+  
+  .chat-window-container {
+    max-height: calc(100% - var(--chat-input-height) - 2rem);
+  }
+}
+
+/* Adjust padding for even smaller screens */
+@media (max-width: 768px) {
+  .chat-container {
+    height: calc(100dvh - 14rem);
+  }
+}
+
+@media (max-width: 640px) {
+  .chat-input-wrapper {
+    padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+  }
+}
 @keyframes pulse-border {
     0% {
       border-color: rgba(139, 92, 246, 0.3);
