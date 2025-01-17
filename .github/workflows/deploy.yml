@@ -42,7 +42,7 @@ jobs:
         uses: denoland/deployctl@v1
         with:
           project: "novadova"
-          entrypoint: "main.ts"
+          entrypoint: "../main.ts"
           root: "dist"
           
           
