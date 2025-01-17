@@ -1,0 +1,10 @@
+{
+  "tasks": {
+    "dev": "deno run -A npm:vite",
+    "dev-serve": "deno run -A main.ts"
+  },
+  "imports": {
+    "@std/assert": "jsr:@std/assert@1"
+  },
+  "nodeModulesDir": "auto"
+}
