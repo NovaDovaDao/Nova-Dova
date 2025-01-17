@@ -27,6 +27,7 @@
     "npm:typescript-eslint@^8.18.2": "8.20.0_eslint@9.18.0_typescript@5.6.3_@typescript-eslint+parser@8.20.0__eslint@9.18.0__typescript@5.6.3",
     "npm:typescript@~5.6.2": "5.6.3",
     "npm:vite-plugin-node-polyfills@0.22": "0.22.0_vite@5.4.11__@types+node@22.10.7_@types+node@22.10.7",
+    "npm:vite@*": "5.4.11_@types+node@22.10.7",
     "npm:vite@^5.4.11": "5.4.11_@types+node@22.10.7"
   },
   "jsr": {

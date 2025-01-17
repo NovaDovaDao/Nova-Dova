@@ -36,13 +36,13 @@ jobs:
             VITE_PRIVY_APP_ID: ${{ vars.VITE_PRIVY_APP_ID }}
             VITE_WEBSOCKET_URL: ${{ vars.VITE_WEBSOCKET_URL }}
             VITE_REST_API_URL: ${{ vars.VITE_REST_API_URL }}
-        run: "npm run build"
+        run: deno task build
 
       - name: Upload to Deno Deploy
         uses: denoland/deployctl@v1
         with:
           project: "novadova"
-          entrypoint: "../main.ts"
-          root: "dist"
+          entrypoint: "main.ts"
+          root: "."
           
           
