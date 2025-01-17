@@ -43,6 +43,6 @@ jobs:
         with:
           project: "novadova"
           entrypoint: "main.ts"
-          root: ""
+          root: "dist"
           
           
