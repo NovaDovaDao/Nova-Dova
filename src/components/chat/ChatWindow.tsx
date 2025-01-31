@@ -59,11 +59,6 @@ export const ChatWindow = () => {
       >
         <p className="text-sm sm:text-base break-words">{message.content}</p>
         <footer className=" space-x-4">
-          {message.sender === "agent" && (
-            <span className=" uppercase text-xs tracking-widest text-blue-400">
-              Dova
-            </span>
-          )}
           <span className="text-xs text-neutral-400 ">
             {new Date(message.created_at).toLocaleTimeString()}
           </span>
