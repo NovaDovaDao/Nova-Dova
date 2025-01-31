@@ -1,6 +1,6 @@
 import { usePrivy } from "@privy-io/react-auth";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useMemo } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
 
 export interface Message {
   agentId?: string;
@@ -32,36 +32,31 @@ export const useChat = () => {
     retryDelay: 1000 * 30,
   });
 
-  const queryClient = useQueryClient();
-  useEffect(() => {
-    // if (!socket) return;
-    // const handleResponse = async (messageId: string) => {
-    //   const token = await getAccessToken();
-    //   const url = new URL(baseUrl);
-    //   url.searchParams.set("messageId", messageId);
-    //   const res = await fetch(url, {
-    //     headers: {
-    //       "x-ghost-token": token ?? "",
-    //     },
-    //   });
-    //   console.log(res);
-    //   const result: { data: Message } = await res.json();
-    //   if (result.data) {
-    //     queryClient.setQueryData(chatQueryKey, (data: Message[]) => {
-    //       return [...data, result.data];
-    //     });
-    //   }
-    // };
-    // socket.on("response", handleResponse);
-    // return () => {
-    //   socket.off("response", handleResponse);
-    // };
-  }, [getAccessToken, queryClient]);
+  const { mutate: sendMessage } = useMutation({
+    mutationKey: ["chat", "send"],
+    mutationFn: async (variables: { message: Message }) => {
+      console.log("not implemented yet", variables);
+    },
+  });
 
-  const messages = useMemo(() => data ?? [], [data]);
+  const messages = useMemo(
+    () =>
+      data ?? [
+        {
+          content:
+            "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quae ipsa deserunt odit cupiditate temporibus? Placeat, rerum corrupti aperiam magnam veritatis molestias illo voluptatum totam velit voluptates labore repudiandae eligendi! Quas.",
+          created_at: new Date().toISOString(),
+          id: Date.now(),
+          sender: "agent",
+          userId: "",
+        } satisfies Message,
+      ],
+    [data]
+  );
 
   return {
     ...rest,
     messages,
+    sendMessage,
   };
 };

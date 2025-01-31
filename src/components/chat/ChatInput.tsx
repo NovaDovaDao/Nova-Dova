@@ -10,6 +10,7 @@ export default function ChatInput({
       <div className="relative">
         <input
           type="text"
+          autoFocus
           placeholder="Type your message..."
           className="form-input bg-transparent border-t-0 border-x-0 text-2xl w-full border-b-2 border-neutral-200 focus:ring-0"
         />

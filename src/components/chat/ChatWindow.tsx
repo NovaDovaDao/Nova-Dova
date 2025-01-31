@@ -5,26 +5,14 @@ import { usePrivy } from "@privy-io/react-auth";
 import ChatInput from "./ChatInput";
 
 export const ChatWindow = () => {
-  const { messages: history, error } = useChat();
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      content:
-        "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quae ipsa deserunt odit cupiditate temporibus? Placeat, rerum corrupti aperiam magnam veritatis molestias illo voluptatum totam velit voluptates labore repudiandae eligendi! Quas.",
-      created_at: new Date().toISOString(),
-      id: Date.now(),
-      sender: "agent",
-      userId: "",
-    },
-  ]);
+  const { messages, error, sendMessage } = useChat();
   const [inputValue, setInputValue] = useState("");
 
   const chatLog = useMemo(() => {
-    return history
-      .concat(messages)
-      .sort((a, b) =>
-        new Date(a.created_at) > new Date(b.created_at) ? 1 : -1
-      );
-  }, [history, messages]);
+    return messages.sort((a, b) =>
+      new Date(a.created_at) > new Date(b.created_at) ? 1 : -1
+    );
+  }, [messages]);
 
   const { user } = usePrivy();
   const handleSendMessage = (e: React.FormEvent) => {
@@ -40,7 +28,7 @@ export const ChatWindow = () => {
       userId: user.id,
     };
 
-    setMessages((prev) => [...prev, newMessage]);
+    sendMessage({ message: newMessage });
     setInputValue("");
   };
 
