@@ -39,18 +39,52 @@ export const ChatWindow = () => {
       } w-full`}
     >
       <div
-        className={`max-w-[85%] sm:max-w-[75%] space-y-1 ${
+        className={`max-w-[85%] sm:max-w-[75%]  ${
           message.sender === "user"
             ? " text-white ml-auto"
             : " text-gray-200 mr-auto"
         }`}
       >
-        <p className="text-sm sm:text-base break-words">{message.content}</p>
-        <footer className=" space-x-4">
-          <span className="text-xs text-neutral-400 ">
-            {new Date(message.created_at).toLocaleTimeString()}
-          </span>
-        </footer>
+        <div className="space-y-1">
+          <p className="text-sm sm:text-base break-words">{message.content}</p>
+          <footer className=" space-x-4">
+            <span className="text-xs text-neutral-400 ">
+              {new Date(message.created_at).toLocaleTimeString()}
+            </span>
+          </footer>
+        </div>
+        <div className="mt-4">
+          <fieldset className="border border-neutral-600 rounded-xl p-4 bg-black overflow-hidden relative">
+            <legend className="uppercase text-xs tracking-widest ">
+              Agent Configurations
+            </legend>
+            <div>
+              <label>
+                <span>Name</span>
+                <input
+                  type="text"
+                  value="Mr. Love"
+                  className="form-input w-full bg-transparent rounded-lg text-sm"
+                />
+              </label>
+            </div>
+            <div>
+              <label>
+                <span>Description</span>
+                <input
+                  type="text"
+                  value="Lorem ipsum dolor sit amet consectetur, adipisicing elit. "
+                  className="form-input w-full bg-transparent rounded-lg text-sm"
+                />
+              </label>
+            </div>
+            <div className=" absolute inset-0 from-black to-transparent bg-gradient-to-t">
+              <button className=" text-blue-400 flex h-full w-full items-center justify-center uppercase">
+                open
+              </button>
+            </div>
+          </fieldset>
+        </div>
       </div>
     </article>
   );
