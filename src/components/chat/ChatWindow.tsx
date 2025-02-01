@@ -1,9 +1,9 @@
 import { Message, useChat } from "@/hooks/useChat";
 import ChatInput from "./ChatInput";
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 
 export const ChatWindow = () => {
-  const { error, messages } = useChat();
+  const { error, messages, isFetched } = useChat();
 
   const chatLog = useMemo(() => {
     return messages.sort((a, b) => a.timestamp - b.timestamp);
@@ -12,7 +12,7 @@ export const ChatWindow = () => {
   const renderMessage = (message: Message) => (
     <article
       key={message.timestamp}
-      className={`flex w-full border-b border-white/20 py-8 relative group ${
+      className={`flex w-full  border-b last-of-type:border-b-0 border-white/20 py-8 relative group ${
         message.role === "user" ? "justify-end" : "justify-start"
       }`}
     >
@@ -79,6 +79,11 @@ export const ChatWindow = () => {
   );
 
   const lastEl = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    if (isFetched && lastEl.current) {
+      lastEl.current.scrollIntoView({ behavior: "instant" });
+    }
+  }, [isFetched]);
 
   return (
     <div className="fixed inset-0 z-10 flex flex-col md:right-0 md:w-1/2 md:left-auto max-h-screen">

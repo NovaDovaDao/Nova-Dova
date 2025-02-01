@@ -33,7 +33,7 @@ function Model(props) {
 
     const handleInput = () => {
       setIsTyping(true); // Set typing to true on any input
-      setRotationSpeed(0.1);
+      setRotationSpeed(0.05);
 
       clearTimeout(timeoutId); // Clear any previous timeouts
 
@@ -54,11 +54,11 @@ function Model(props) {
     if (mesh.current?.rotation) {
       if (isTyping) {
         mesh.current.rotation.y += rotationSpeed; // Use fast speed while typing
-        mesh.current.rotation.x += rotationSpeed * 0.5;
+        mesh.current.rotation.x += rotationSpeed * 0.1;
       } else {
         // Smoothly decrease rotation speed:
         setRotationSpeed((prevSpeed) => {
-          const newSpeed = Math.max(0.002, prevSpeed - 0.001); // Decrease speed gradually
+          const newSpeed = Math.max(0.01, prevSpeed - 0.001); // Decrease speed gradually
           return newSpeed;
         });
         mesh.current.rotation.y += rotationSpeed; // Apply the current speed
