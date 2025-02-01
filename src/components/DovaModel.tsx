@@ -17,7 +17,8 @@ import {
 } from "@react-three/postprocessing";
 import { LUTCubeLoader, ToneMappingMode } from "postprocessing";
 import { useEffect, useRef, useState } from "react";
-import { usePrivy } from "@privy-io/react-auth";
+import { useAppStore } from "@/stores/app";
+import { useDovaStore } from "@/stores/dova";
 
 function Model(props) {
   const { nodes } = useGLTF("/flower-transformed.glb");
@@ -62,8 +63,9 @@ function Model(props) {
 
   const isMobile = width <= 768;
 
+  const { isRotating, envMapIntensity } = useDovaStore();
   useFrame(() => {
-    if (mesh.current?.rotation && !isMobile) {
+    if (mesh.current?.rotation && !isMobile && isRotating) {
       if (isTyping) {
         mesh.current.rotation.y += rotationSpeed; // Use fast speed while typing
         mesh.current.rotation.x += rotationSpeed * 0.1;
@@ -92,7 +94,7 @@ function Model(props) {
           iridescenceIOR={1}
           iridescenceThicknessRange={[0, 1400]}
           clearcoat={1}
-          envMapIntensity={0.5}
+          envMapIntensity={envMapIntensity}
           distortionScale={0}
           temporalDistortion={0}
         />
@@ -121,11 +123,10 @@ function Model(props) {
 
 export default function DovaModel() {
   const texture: THREE.Texture = useLoader(LUTCubeLoader, "/F-6800-STD.cube");
-  const { login, authenticated } = usePrivy();
+  const { isChatOpen, setIsChatOpen } = useAppStore();
 
   function handleClick() {
-    if (authenticated) return;
-    login();
+    if (!isChatOpen) setIsChatOpen(true);
   }
 
   return (

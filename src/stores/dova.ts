@@ -5,6 +5,7 @@ import * as THREE from "three";
 interface DovaState {
   rotationSpeed: number;
   isRotating: boolean;
+  envMapIntensity: number;
   typingSpeed: number;
   isTyping: boolean;
   petalColor: string;
@@ -28,6 +29,7 @@ interface DovaState {
 export const useDovaStore = create<DovaState>((set) => ({
   rotationSpeed: 0.01,
   isRotating: true,
+  envMapIntensity: 0.05,
   typingSpeed: 0.1,
   isTyping: false,
   petalColor: "white",

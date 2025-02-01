@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import DovaModel from "./components/DovaModel";
 import { ChatWindow } from "./components/chat/ChatWindow";
 import AppHeader from "./components/app/AppHeader";
+import { useAppStore } from "./stores/app";
 
 const solanaConnectors = toSolanaWalletConnectors({
   shouldAutoConnect: false,
@@ -13,6 +14,7 @@ const solanaConnectors = toSolanaWalletConnectors({
 const queryClient = new QueryClient();
 
 function App() {
+  const { isChatOpen } = useAppStore();
   return (
     <QueryClientProvider client={queryClient}>
       <PrivyProvider
@@ -33,7 +35,7 @@ function App() {
         }}
       >
         <AppHeader />
-        <ChatWindow />
+        {isChatOpen && <ChatWindow />}
         <DovaModel />
       </PrivyProvider>
     </QueryClientProvider>
