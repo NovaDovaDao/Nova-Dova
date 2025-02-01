@@ -1,5 +1,3 @@
-// https://twitter.com/igor_3000A/status/1646542441112297474
-
 import * as THREE from "three";
 import { Canvas, ThreeElements, useFrame, useLoader } from "@react-three/fiber";
 import {
@@ -58,7 +56,7 @@ function Model(props) {
       } else {
         // Smoothly decrease rotation speed:
         setRotationSpeed((prevSpeed) => {
-          const newSpeed = Math.max(0.01, prevSpeed - 0.001); // Decrease speed gradually
+          const newSpeed = Math.max(0.001, prevSpeed - 0.001); // Decrease speed gradually
           return newSpeed;
         });
         mesh.current.rotation.y += rotationSpeed; // Apply the current speed
