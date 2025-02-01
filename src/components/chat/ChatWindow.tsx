@@ -1,7 +1,7 @@
 import { Message, useChat } from "@/hooks/useChat";
 import ChatInput from "./ChatInput";
 import { useEffect, useMemo, useRef } from "react";
-import { formatDistance, formatDistanceToNow } from "date-fns";
+import { formatDistanceToNow } from "date-fns";
 
 export const ChatWindow = () => {
   const { error, messages, isLoading } = useChat();

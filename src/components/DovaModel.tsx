@@ -16,7 +16,7 @@ import {
   ToneMapping,
 } from "@react-three/postprocessing";
 import { LUTCubeLoader, ToneMappingMode } from "postprocessing";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useAppStore } from "@/stores/app";
 import { useDovaStore } from "@/stores/dova";
 
@@ -49,23 +49,21 @@ function Model(props) {
     };
   }, []); // Empty dependency array ensures this runs only once
 
-  const [width, setWidth] = useState<number>(window.innerWidth);
+  const { isRotating, envMapIntensity, setIsRotating } = useDovaStore();
+  const handleWindowSizeChange = useCallback(() => {
+    setIsRotating(window.innerWidth < 768);
+  }, [setIsRotating]);
 
-  function handleWindowSizeChange() {
-    setWidth(window.innerWidth);
-  }
   useEffect(() => {
+    handleWindowSizeChange();
     window.addEventListener("resize", handleWindowSizeChange);
     return () => {
       window.removeEventListener("resize", handleWindowSizeChange);
     };
-  }, []);
+  }, [handleWindowSizeChange]);
 
-  const isMobile = width <= 768;
-
-  const { isRotating, envMapIntensity } = useDovaStore();
   useFrame(() => {
-    if (mesh.current?.rotation && !isMobile && isRotating) {
+    if (mesh.current?.rotation && isRotating) {
       if (isTyping) {
         mesh.current.rotation.y += rotationSpeed; // Use fast speed while typing
         mesh.current.rotation.x += rotationSpeed * 0.1;
