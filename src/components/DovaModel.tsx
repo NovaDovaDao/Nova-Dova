@@ -48,8 +48,22 @@ function Model(props) {
     };
   }, []); // Empty dependency array ensures this runs only once
 
+  const [width, setWidth] = useState<number>(window.innerWidth);
+
+  function handleWindowSizeChange() {
+    setWidth(window.innerWidth);
+  }
+  useEffect(() => {
+    window.addEventListener("resize", handleWindowSizeChange);
+    return () => {
+      window.removeEventListener("resize", handleWindowSizeChange);
+    };
+  }, []);
+
+  const isMobile = width <= 768;
+
   useFrame(() => {
-    if (mesh.current?.rotation) {
+    if (mesh.current?.rotation && !isMobile) {
       if (isTyping) {
         mesh.current.rotation.y += rotationSpeed; // Use fast speed while typing
         mesh.current.rotation.x += rotationSpeed * 0.1;

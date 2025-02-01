@@ -18,9 +18,9 @@ export const ChatWindow = () => {
   }, [isLoading]);
 
   return (
-    <div className="fixed inset-0 z-10 flex flex-col md:right-0 md:w-1/2 md:left-auto max-h-screen">
+    <div className="fixed inset-0 z-10 flex flex-col md:right-0 md:w-1/2 md:left-auto max-h-screen bg-black/90">
       <div className="flex-1 overflow-auto">
-        <div className="h-full px-8">
+        <div className="h-full px-12 md:px-8">
           {chatLog.map((message, i) => (
             <article
               key={message.timestamp}

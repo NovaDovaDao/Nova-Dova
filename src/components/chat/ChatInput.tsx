@@ -18,7 +18,7 @@ export default function ChatInput() {
   };
 
   return (
-    <form onSubmit={handleSendMessage} className="p-8">
+    <form onSubmit={handleSendMessage} className="p-12 md:p-8">
       <div className="relative">
         <input
           type="text"
