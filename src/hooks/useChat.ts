@@ -1,17 +1,13 @@
 import { usePrivy } from "@privy-io/react-auth";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo } from "react";
 
 export interface Message {
-  agentId?: string;
   content: string;
-  created_at: string;
-  id: number;
-  sender: "user" | "agent";
-  userId: string;
+  timestamp: number;
+  role: "user" | "agent" | "system";
 }
 
-const baseUrl = new URL("/get-chat", import.meta.env.VITE_REST_API_URL);
 const chatQueryKey = ["chat", "general"];
 
 export const useChat = () => {
@@ -20,43 +16,51 @@ export const useChat = () => {
     queryKey: chatQueryKey,
     queryFn: async () => {
       const token = await getAccessToken();
-      const res = await fetch(baseUrl, {
+      const url = new URL("/chat", import.meta.env.VITE_REST_API_URL);
+      const res = await fetch(url, {
         headers: {
           "x-ghost-token": token ?? "",
         },
       });
-      const result: { data: Message[] } = await res.json();
-      return result.data;
+      const result: Message[] = await res.json();
+      return result;
     },
     enabled: authenticated,
     retryDelay: 1000 * 30,
   });
 
-  const { mutate: sendMessage } = useMutation({
-    mutationKey: ["chat", "send"],
-    mutationFn: async (variables: { message: Message }) => {
-      console.log("not implemented yet", variables);
-    },
-  });
-
-  const messages = useMemo(
-    () =>
-      data ?? [
-        {
-          content:
-            "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quae ipsa deserunt odit cupiditate temporibus? Placeat, rerum corrupti aperiam magnam veritatis molestias illo voluptatum totam velit voluptates labore repudiandae eligendi! Quas.",
-          created_at: new Date().toISOString(),
-          id: Date.now(),
-          sender: "agent",
-          userId: "",
-        } satisfies Message,
-      ],
-    [data]
-  );
+  const messages = useMemo(() => data ?? [], [data]);
 
   return {
     ...rest,
     messages,
+  };
+};
+
+export const useSendMessage = () => {
+  const { getAccessToken } = usePrivy();
+  const queryClient = useQueryClient();
+  const { mutate: sendMessage, ...rest } = useMutation({
+    mutationKey: ["chat", "send"],
+    mutationFn: async (variables: { message: Message["content"] }) => {
+      const token = await getAccessToken();
+      const url = new URL("/chat", import.meta.env.VITE_REST_API_URL);
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          "x-ghost-token": token ?? "",
+        },
+        body: JSON.stringify({
+          content: variables.message,
+        }),
+      });
+      const result: Message = await res.json();
+      await queryClient.refetchQueries({ queryKey: chatQueryKey });
+      return result;
+    },
+  });
+  return {
+    ...rest,
     sendMessage,
   };
 };

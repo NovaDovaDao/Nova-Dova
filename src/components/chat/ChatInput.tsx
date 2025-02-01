@@ -1,22 +1,38 @@
-import { FormEvent } from "react";
+import { useSendMessage } from "@/hooks/useChat";
+import { usePrivy } from "@privy-io/react-auth";
+import { useState } from "react";
 
-export default function ChatInput({
-  handleSendMessage,
-}: {
-  handleSendMessage: (event: FormEvent<HTMLFormElement>) => void;
-}) {
+export default function ChatInput() {
+  const { sendMessage, isPending } = useSendMessage();
+  const [inputValue, setInputValue] = useState("");
+
+  const { user } = usePrivy();
+  const handleSendMessage = (e: React.FormEvent) => {
+    if (isPending) return;
+    e.preventDefault();
+    e.stopPropagation();
+    if (!inputValue.trim() || !user?.id) return;
+
+    sendMessage({ message: inputValue });
+    setInputValue("");
+  };
+
   return (
     <form onSubmit={handleSendMessage} className="p-8">
       <div className="relative">
         <input
           type="text"
           autoFocus
+          value={inputValue}
+          readOnly={isPending}
+          onChange={(ev) => setInputValue(ev.currentTarget.value)}
           placeholder="Type your message..."
-          className="form-input bg-transparent border-t-0 border-x-0 text-2xl w-full border-b-2 border-neutral-200 focus:ring-0"
+          className="form-input bg-transparent border-t-0 border-x-0 text-2xl w-full border-b-2 border-neutral-200 focus:border-pink-400 focus:ring-0"
         />
         <button
           type="submit"
-          className="absolute bottom-4 right-0 transition-transform ring-0 hover:translate-x-1"
+          disabled={isPending}
+          className="absolute bottom-4 right-0 transition-colors hover:text-pink-400"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

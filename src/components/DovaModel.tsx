@@ -58,7 +58,7 @@ function Model(props) {
       } else {
         // Smoothly decrease rotation speed:
         setRotationSpeed((prevSpeed) => {
-          const newSpeed = Math.max(0.01, prevSpeed - 0.001); // Decrease speed gradually
+          const newSpeed = Math.max(0.002, prevSpeed - 0.001); // Decrease speed gradually
           return newSpeed;
         });
         mesh.current.rotation.y += rotationSpeed; // Apply the current speed
@@ -109,11 +109,11 @@ function Model(props) {
 
 export default function DovaModel() {
   const texture: THREE.Texture = useLoader(LUTCubeLoader, "/F-6800-STD.cube");
-  const { connectWallet, authenticated } = usePrivy();
+  const { login, authenticated } = usePrivy();
 
   function handleClick() {
     if (authenticated) return;
-    connectWallet();
+    login();
   }
 
   return (
