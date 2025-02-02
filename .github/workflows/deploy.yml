@@ -36,6 +36,7 @@ jobs:
           VITE_PRIVY_APP_ID: ${{ vars.VITE_PRIVY_APP_ID }}
           VITE_WEBSOCKET_URL: ${{ vars.VITE_WEBSOCKET_URL }}
           VITE_REST_API_URL: ${{ vars.VITE_REST_API_URL }}
+          VITE_APP_COMMIT_HASH: ${{ github.sha }}
         run: deno task build
 
       - name: Upload to Deno Deploy
