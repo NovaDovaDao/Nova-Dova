@@ -10,4 +10,7 @@
 }
 
 @layer components {
+  .btn {
+    @apply inline-block rounded-sm border border-pink-600 bg-pink-600 px-4 py-1 text-sm font-medium text-white hover:bg-transparent hover:text-pink-600;
+  }
 }

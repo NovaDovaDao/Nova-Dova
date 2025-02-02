@@ -11,7 +11,7 @@ export interface Message {
 const chatQueryKey = ["chat", "general"];
 
 export const useChat = () => {
-  const { getAccessToken, authenticated } = usePrivy();
+  const { getAccessToken } = usePrivy();
   const { data, ...rest } = useQuery({
     queryKey: chatQueryKey,
     queryFn: async () => {
@@ -25,7 +25,6 @@ export const useChat = () => {
       const result: Message[] = await res.json();
       return result;
     },
-    enabled: authenticated,
     retryDelay: 1000 * 30,
   });
 
@@ -54,10 +53,11 @@ export const useSendMessage = () => {
           content: variables.message,
         }),
       });
+
       await queryClient.refetchQueries({ queryKey: chatQueryKey });
       const result: Message = (await res.json()) as Message;
 
-      if (result.role === "system") alert(result.content);
+      if (result.role === "system") throw new Error(result.content);
 
       return result;
     },

@@ -3,6 +3,7 @@ import { formatDistanceToNow } from "date-fns";
 import Markdown from "markdown-to-jsx";
 import { Message, useChat } from "@/hooks/useChat";
 import ChatInput from "./ChatInput";
+import AppAlert from "../app/AppAlert";
 // import AgentModal from "../agent/AgentModal";
 
 export const ChatWindow = () => {
@@ -14,10 +15,10 @@ export const ChatWindow = () => {
 
   const lastEl = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
-    if (!isLoading && lastEl.current) {
-      lastEl.current.scrollIntoView({ behavior: "instant" });
+    if (!isLoading && messages && lastEl.current) {
+      lastEl.current.scrollIntoView();
     }
-  }, [isLoading]);
+  }, [isLoading, messages]);
 
   return (
     <div className="fixed inset-0 z-10 flex flex-col md:right-0 md:w-1/2 md:left-auto max-h-screen bg-black/90 md:bg-transparent">
@@ -41,11 +42,7 @@ export const ChatWindow = () => {
         </div>
       </div>
 
-      {error && (
-        <p className="mt-4 text-sm text-pink-400 bg-pink-600/10 py-2 px-4 border-pink-400/20 border mx-8 rounded">
-          {error.message}
-        </p>
-      )}
+      {error && <AppAlert className="mt-4 mx-8">{error.message}</AppAlert>}
 
       <ChatInput />
     </div>
