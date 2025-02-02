@@ -1,7 +1,9 @@
-import { Message, useChat } from "@/hooks/useChat";
-import ChatInput from "./ChatInput";
 import { useEffect, useMemo, useRef } from "react";
 import { formatDistanceToNow } from "date-fns";
+import Markdown from "markdown-to-jsx";
+import { Message, useChat } from "@/hooks/useChat";
+import ChatInput from "./ChatInput";
+// import AgentModal from "../agent/AgentModal";
 
 export const ChatWindow = () => {
   const { error, messages, isLoading } = useChat();
@@ -35,10 +37,15 @@ export const ChatWindow = () => {
             </article>
           ))}
           <div ref={lastEl}></div>
+          {/* {chatLog.length > 0 && <AgentModal />} */}
         </div>
       </div>
 
-      {error && <p className="text-sm text-red-400">{error.message}</p>}
+      {error && (
+        <p className="mt-4 text-sm text-pink-400 bg-pink-600/10 py-2 px-4 border-pink-400/20 border mx-8 rounded">
+          {error.message}
+        </p>
+      )}
 
       <ChatInput />
     </div>
@@ -62,7 +69,9 @@ const ChatMessage = ({ message }: { message: Message }) => (
         {formatDistanceToNow(message.timestamp, { addSuffix: true })}
       </span>
     </header>
-    <p className="text-sm break-words">{message.content}</p>
+    <Markdown className="text-sm break-words prose prose-invert">
+      {message.content}
+    </Markdown>
     <footer>
       {message.role === "agent" && (
         <span className="uppercase tracking-widest text-[10px] text-pink-400">
@@ -70,39 +79,5 @@ const ChatMessage = ({ message }: { message: Message }) => (
         </span>
       )}
     </footer>
-    {/* <div className="mt-4">
-        <fieldset className="border border-neutral-600 rounded-xl p-4 bg-black overflow-hidden relative">
-          <legend className="uppercase text-xs tracking-widest ">
-            Agent Configurations
-          </legend>
-          <div>
-            <label>
-              <span>Name</span>
-              <input
-                type="text"
-                value="Mr. Love"
-                readOnly
-                className="form-input w-full bg-transparent rounded-lg text-sm"
-              />
-            </label>
-          </div>
-          <div>
-            <label>
-              <span>Description</span>
-              <input
-                type="text"
-                value="Lorem ipsum dolor sit amet consectetur, adipisicing elit. "
-                readOnly
-                className="form-input w-full bg-transparent rounded-lg text-sm"
-              />
-            </label>
-          </div>
-          <div className=" absolute inset-0 from-black to-transparent bg-gradient-to-t">
-            <button className=" text-blue-400 flex h-full w-full items-center justify-center uppercase">
-              open
-            </button>
-          </div>
-        </fieldset>
-      </div> */}
   </div>
 );

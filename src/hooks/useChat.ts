@@ -54,8 +54,11 @@ export const useSendMessage = () => {
           content: variables.message,
         }),
       });
-      const result: Message = await res.json();
       await queryClient.refetchQueries({ queryKey: chatQueryKey });
+      const result: Message = (await res.json()) as Message;
+
+      if (result.role === "system") alert(result.content);
+
       return result;
     },
   });

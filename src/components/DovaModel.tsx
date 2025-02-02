@@ -51,7 +51,7 @@ function Model(props) {
 
   const { isRotating, envMapIntensity, setIsRotating } = useDovaStore();
   const handleWindowSizeChange = useCallback(() => {
-    setIsRotating(window.innerWidth < 768);
+    setIsRotating(window.innerWidth > 768);
   }, [setIsRotating]);
 
   useEffect(() => {
