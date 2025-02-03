@@ -32,7 +32,7 @@ export default function ChatInput() {
           readOnly={isPending}
           onChange={(ev) => setInputValue(ev.currentTarget.value)}
           placeholder="Type your message..."
-          className="form-input bg-transparent border-t-0 border-x-0 text-2xl w-full border-b border-neutral-200 focus:border-pink-600 focus:ring-0 [field-sizing:content]"
+          className="form-input bg-transparent border-t-0 border-x-0 text-2xl w-full border-b border-neutral-200 focus:border-pink-600 focus:ring-0 [field-sizing:content] pr-8"
         />
         <Button
           type="submit"
