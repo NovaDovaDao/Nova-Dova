@@ -2,9 +2,10 @@
 import { PrivyProvider } from "@privy-io/react-auth";
 import { toSolanaWalletConnectors } from "@privy-io/react-auth/solana";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import DovaModel from "./components/DovaModel";
-import { ChatWindow } from "./components/chat/ChatWindow";
-import AppHeader from "./components/app/AppHeader";
+// import DovaModel from "./components/dova/DovaModel.tsx";
+import { ChatWindow } from "./components/chat/ChatWindow.tsx";
+import AppHeader from "./components/app/AppHeader.tsx";
+import AppNav from "./components/app/AppNav.tsx";
 
 const solanaConnectors = toSolanaWalletConnectors({
   shouldAutoConnect: false,
@@ -33,8 +34,9 @@ function App() {
         }}
       >
         <AppHeader />
+        <AppNav />
         <ChatWindow />
-        <DovaModel />
+        {/* <DovaModel /> */}
       </PrivyProvider>
     </QueryClientProvider>
   );

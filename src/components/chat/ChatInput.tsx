@@ -1,6 +1,8 @@
 import { useSendMessage } from "@/hooks/useChat";
 import { useState } from "react";
 import AppAlert from "../app/AppAlert";
+import { Button, Textarea } from "@headlessui/react";
+import { Send } from "lucide-react";
 
 export default function ChatInput() {
   const { sendMessage, isPending, error } = useSendMessage();
@@ -24,35 +26,21 @@ export default function ChatInput() {
       {error && <AppAlert className="mb-2">{error?.message}</AppAlert>}
 
       <div className="relative">
-        <input
-          type="text"
+        <Textarea
           autoFocus
           value={inputValue}
           readOnly={isPending}
           onChange={(ev) => setInputValue(ev.currentTarget.value)}
           placeholder="Type your message..."
-          className="form-input bg-transparent border-t-0 border-x-0 text-2xl w-full border-b border-neutral-200 focus:border-pink-600 focus:ring-0"
+          className="form-input bg-transparent border-t-0 border-x-0 text-2xl w-full border-b border-neutral-200 focus:border-pink-600 focus:ring-0 [field-sizing:content]"
         />
-        <button
+        <Button
           type="submit"
           disabled={isPending}
-          className="absolute bottom-4 right-0 transition-colors hover:text-pink-400"
+          className="absolute bottom-1/2 right-0 transition-colors hover:text-pink-400"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-5 h-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M14 5l7 7m0 0l-7 7m7-7H3"
-            />
-          </svg>
-        </button>
+          <Send />
+        </Button>
       </div>
     </form>
   );
